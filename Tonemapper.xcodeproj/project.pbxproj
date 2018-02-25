@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		1741B67A202A7DAD00792F36 /* Tonemapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1741B670202A7DAD00792F36 /* Tonemapper.framework */; };
-		1741B67F202A7DAD00792F36 /* TonemapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741B67E202A7DAD00792F36 /* TonemapperTests.swift */; };
+		1741B67F202A7DAD00792F36 /* ShaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741B67E202A7DAD00792F36 /* ShaderTests.swift */; };
 		1741B681202A7DAD00792F36 /* Tonemapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1741B673202A7DAD00792F36 /* Tonemapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1741C4B22041D45300F60511 /* CITonemapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4B12041D45300F60511 /* CITonemapper.swift */; };
 		1741C4B42041DE7D00F60511 /* SegmentationShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4B32041DE7D00F60511 /* SegmentationShader.metal */; };
-		1741C4B82042FE2700F60511 /* toGreyShaderIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4B72042FE2700F60511 /* toGreyShaderIO.swift */; };
+		1741C4B82042FE2700F60511 /* toGrayShaderIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4B72042FE2700F60511 /* toGrayShaderIO.swift */; };
 		1741C4BA2042FE5E00F60511 /* MetalKitPlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1741C4B92042FE5E00F60511 /* MetalKitPlus.framework */; };
 		1741C4BC2042FF7500F60511 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4BB2042FF7500F60511 /* extensions.swift */; };
 		1741C4BE20430B1000F60511 /* bilateralFilterIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4BD20430B1000F60511 /* bilateralFilterIO.swift */; };
@@ -33,11 +33,11 @@
 		1741B673202A7DAD00792F36 /* Tonemapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tonemapper.h; sourceTree = "<group>"; };
 		1741B674202A7DAD00792F36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1741B679202A7DAD00792F36 /* TonemapperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TonemapperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1741B67E202A7DAD00792F36 /* TonemapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TonemapperTests.swift; sourceTree = "<group>"; };
+		1741B67E202A7DAD00792F36 /* ShaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderTests.swift; sourceTree = "<group>"; };
 		1741B680202A7DAD00792F36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1741C4B12041D45300F60511 /* CITonemapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CITonemapper.swift; sourceTree = "<group>"; };
 		1741C4B32041DE7D00F60511 /* SegmentationShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SegmentationShader.metal; sourceTree = "<group>"; };
-		1741C4B72042FE2700F60511 /* toGreyShaderIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = toGreyShaderIO.swift; sourceTree = "<group>"; };
+		1741C4B72042FE2700F60511 /* toGrayShaderIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = toGrayShaderIO.swift; sourceTree = "<group>"; };
 		1741C4B92042FE5E00F60511 /* MetalKitPlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MetalKitPlus.framework; sourceTree = "<group>"; };
 		1741C4BB2042FF7500F60511 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		1741C4BD20430B1000F60511 /* bilateralFilterIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bilateralFilterIO.swift; sourceTree = "<group>"; };
@@ -97,7 +97,7 @@
 		1741B67D202A7DAD00792F36 /* TonemapperTests */ = {
 			isa = PBXGroup;
 			children = (
-				1741B67E202A7DAD00792F36 /* TonemapperTests.swift */,
+				1741B67E202A7DAD00792F36 /* ShaderTests.swift */,
 				1741B680202A7DAD00792F36 /* Info.plist */,
 			);
 			path = TonemapperTests;
@@ -123,7 +123,7 @@
 		1741C4B62042FB3E00F60511 /* ShaderIOs */ = {
 			isa = PBXGroup;
 			children = (
-				1741C4B72042FE2700F60511 /* toGreyShaderIO.swift */,
+				1741C4B72042FE2700F60511 /* toGrayShaderIO.swift */,
 				1741C4BD20430B1000F60511 /* bilateralFilterIO.swift */,
 			);
 			path = ShaderIOs;
@@ -242,7 +242,7 @@
 			files = (
 				1741C4BE20430B1000F60511 /* bilateralFilterIO.swift in Sources */,
 				1741C4B42041DE7D00F60511 /* SegmentationShader.metal in Sources */,
-				1741C4B82042FE2700F60511 /* toGreyShaderIO.swift in Sources */,
+				1741C4B82042FE2700F60511 /* toGrayShaderIO.swift in Sources */,
 				1741C4B22041D45300F60511 /* CITonemapper.swift in Sources */,
 				1741C4BC2042FF7500F60511 /* extensions.swift in Sources */,
 			);
@@ -252,7 +252,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1741B67F202A7DAD00792F36 /* TonemapperTests.swift in Sources */,
+				1741B67F202A7DAD00792F36 /* ShaderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,6 +441,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 529Y8Q5FKY;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				INFOPLIST_FILE = TonemapperTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = PhilippWaxweiler.TonemapperTests;
@@ -456,6 +457,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 529Y8Q5FKY;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				INFOPLIST_FILE = TonemapperTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = PhilippWaxweiler.TonemapperTests;
