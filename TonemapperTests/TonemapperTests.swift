@@ -11,9 +11,16 @@ import XCTest
 
 class TonemapperTests: XCTestCase {
     
+    var TestPic:CIImage! = nil
+    
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        
+        guard let Picture = CIImage(contentsOf: FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents/Codes/Testpics/QianYuan/myTestpic.jpg")) else {
+            fatalError("Could not load file: " + FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents/Codes/Testpics/QianYuan/myTestpic.jpg").absoluteString)
+        }
+        
+        TestPic = Picture
     }
     
     override func tearDown() {
@@ -21,9 +28,8 @@ class TonemapperTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testBilateralFilter() {
+        
     }
     
     func testPerformanceExample() {

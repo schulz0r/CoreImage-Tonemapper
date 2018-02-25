@@ -15,6 +15,7 @@
 		1741C4B82042FE2700F60511 /* toGreyShaderIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4B72042FE2700F60511 /* toGreyShaderIO.swift */; };
 		1741C4BA2042FE5E00F60511 /* MetalKitPlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1741C4B92042FE5E00F60511 /* MetalKitPlus.framework */; };
 		1741C4BC2042FF7500F60511 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4BB2042FF7500F60511 /* extensions.swift */; };
+		1741C4BE20430B1000F60511 /* bilateralFilterIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4BD20430B1000F60511 /* bilateralFilterIO.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +40,7 @@
 		1741C4B72042FE2700F60511 /* toGreyShaderIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = toGreyShaderIO.swift; sourceTree = "<group>"; };
 		1741C4B92042FE5E00F60511 /* MetalKitPlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MetalKitPlus.framework; sourceTree = "<group>"; };
 		1741C4BB2042FF7500F60511 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
+		1741C4BD20430B1000F60511 /* bilateralFilterIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = bilateralFilterIO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,8 +85,8 @@
 		1741B672202A7DAD00792F36 /* Tonemapper */ = {
 			isa = PBXGroup;
 			children = (
-				1741C4B62042FB3E00F60511 /* ShaderIOs */,
 				1741C4B52042FB2E00F60511 /* Shader */,
+				1741C4B62042FB3E00F60511 /* ShaderIOs */,
 				1741C4B12041D45300F60511 /* CITonemapper.swift */,
 				1741C4BB2042FF7500F60511 /* extensions.swift */,
 				1741C4B02040DF3C00F60511 /* Misc */,
@@ -122,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				1741C4B72042FE2700F60511 /* toGreyShaderIO.swift */,
+				1741C4BD20430B1000F60511 /* bilateralFilterIO.swift */,
 			);
 			path = ShaderIOs;
 			sourceTree = "<group>";
@@ -237,6 +240,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1741C4BE20430B1000F60511 /* bilateralFilterIO.swift in Sources */,
 				1741C4B42041DE7D00F60511 /* SegmentationShader.metal in Sources */,
 				1741C4B82042FE2700F60511 /* toGreyShaderIO.swift in Sources */,
 				1741C4B22041D45300F60511 /* CITonemapper.swift in Sources */,
