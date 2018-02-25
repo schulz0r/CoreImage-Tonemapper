@@ -1,0 +1,496 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1741B67A202A7DAD00792F36 /* Tonemapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1741B670202A7DAD00792F36 /* Tonemapper.framework */; };
+		1741B67F202A7DAD00792F36 /* TonemapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741B67E202A7DAD00792F36 /* TonemapperTests.swift */; };
+		1741B681202A7DAD00792F36 /* Tonemapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1741B673202A7DAD00792F36 /* Tonemapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1741C4B22041D45300F60511 /* CITonemapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4B12041D45300F60511 /* CITonemapper.swift */; };
+		1741C4B42041DE7D00F60511 /* SegmentationShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4B32041DE7D00F60511 /* SegmentationShader.metal */; };
+		1741C4B82042FE2700F60511 /* toGreyShaderIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4B72042FE2700F60511 /* toGreyShaderIO.swift */; };
+		1741C4BA2042FE5E00F60511 /* MetalKitPlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1741C4B92042FE5E00F60511 /* MetalKitPlus.framework */; };
+		1741C4BC2042FF7500F60511 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4BB2042FF7500F60511 /* extensions.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1741B67B202A7DAD00792F36 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1741B667202A7DAC00792F36 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1741B66F202A7DAD00792F36;
+			remoteInfo = Tonemapper;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1741B670202A7DAD00792F36 /* Tonemapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Tonemapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1741B673202A7DAD00792F36 /* Tonemapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tonemapper.h; sourceTree = "<group>"; };
+		1741B674202A7DAD00792F36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1741B679202A7DAD00792F36 /* TonemapperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TonemapperTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1741B67E202A7DAD00792F36 /* TonemapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TonemapperTests.swift; sourceTree = "<group>"; };
+		1741B680202A7DAD00792F36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1741C4B12041D45300F60511 /* CITonemapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CITonemapper.swift; sourceTree = "<group>"; };
+		1741C4B32041DE7D00F60511 /* SegmentationShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SegmentationShader.metal; sourceTree = "<group>"; };
+		1741C4B72042FE2700F60511 /* toGreyShaderIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = toGreyShaderIO.swift; sourceTree = "<group>"; };
+		1741C4B92042FE5E00F60511 /* MetalKitPlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MetalKitPlus.framework; sourceTree = "<group>"; };
+		1741C4BB2042FF7500F60511 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1741B66C202A7DAD00792F36 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1741C4BA2042FE5E00F60511 /* MetalKitPlus.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1741B676202A7DAD00792F36 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1741B67A202A7DAD00792F36 /* Tonemapper.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1741B666202A7DAC00792F36 = {
+			isa = PBXGroup;
+			children = (
+				1741C4B92042FE5E00F60511 /* MetalKitPlus.framework */,
+				1741B672202A7DAD00792F36 /* Tonemapper */,
+				1741B67D202A7DAD00792F36 /* TonemapperTests */,
+				1741B671202A7DAD00792F36 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1741B671202A7DAD00792F36 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1741B670202A7DAD00792F36 /* Tonemapper.framework */,
+				1741B679202A7DAD00792F36 /* TonemapperTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1741B672202A7DAD00792F36 /* Tonemapper */ = {
+			isa = PBXGroup;
+			children = (
+				1741C4B62042FB3E00F60511 /* ShaderIOs */,
+				1741C4B52042FB2E00F60511 /* Shader */,
+				1741C4B12041D45300F60511 /* CITonemapper.swift */,
+				1741C4BB2042FF7500F60511 /* extensions.swift */,
+				1741C4B02040DF3C00F60511 /* Misc */,
+			);
+			path = Tonemapper;
+			sourceTree = "<group>";
+		};
+		1741B67D202A7DAD00792F36 /* TonemapperTests */ = {
+			isa = PBXGroup;
+			children = (
+				1741B67E202A7DAD00792F36 /* TonemapperTests.swift */,
+				1741B680202A7DAD00792F36 /* Info.plist */,
+			);
+			path = TonemapperTests;
+			sourceTree = "<group>";
+		};
+		1741C4B02040DF3C00F60511 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				1741B673202A7DAD00792F36 /* Tonemapper.h */,
+				1741B674202A7DAD00792F36 /* Info.plist */,
+			);
+			name = Misc;
+			sourceTree = "<group>";
+		};
+		1741C4B52042FB2E00F60511 /* Shader */ = {
+			isa = PBXGroup;
+			children = (
+				1741C4B32041DE7D00F60511 /* SegmentationShader.metal */,
+			);
+			name = Shader;
+			sourceTree = "<group>";
+		};
+		1741C4B62042FB3E00F60511 /* ShaderIOs */ = {
+			isa = PBXGroup;
+			children = (
+				1741C4B72042FE2700F60511 /* toGreyShaderIO.swift */,
+			);
+			path = ShaderIOs;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		1741B66D202A7DAD00792F36 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1741B681202A7DAD00792F36 /* Tonemapper.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		1741B66F202A7DAD00792F36 /* Tonemapper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1741B684202A7DAD00792F36 /* Build configuration list for PBXNativeTarget "Tonemapper" */;
+			buildPhases = (
+				1741B66B202A7DAD00792F36 /* Sources */,
+				1741B66C202A7DAD00792F36 /* Frameworks */,
+				1741B66D202A7DAD00792F36 /* Headers */,
+				1741B66E202A7DAD00792F36 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Tonemapper;
+			productName = Tonemapper;
+			productReference = 1741B670202A7DAD00792F36 /* Tonemapper.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		1741B678202A7DAD00792F36 /* TonemapperTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1741B687202A7DAD00792F36 /* Build configuration list for PBXNativeTarget "TonemapperTests" */;
+			buildPhases = (
+				1741B675202A7DAD00792F36 /* Sources */,
+				1741B676202A7DAD00792F36 /* Frameworks */,
+				1741B677202A7DAD00792F36 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1741B67C202A7DAD00792F36 /* PBXTargetDependency */,
+			);
+			name = TonemapperTests;
+			productName = TonemapperTests;
+			productReference = 1741B679202A7DAD00792F36 /* TonemapperTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1741B667202A7DAC00792F36 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0920;
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = "Philipp Waxweiler";
+				TargetAttributes = {
+					1741B66F202A7DAD00792F36 = {
+						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0920;
+						ProvisioningStyle = Automatic;
+					};
+					1741B678202A7DAD00792F36 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 1741B66A202A7DAC00792F36 /* Build configuration list for PBXProject "Tonemapper" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 1741B666202A7DAC00792F36;
+			productRefGroup = 1741B671202A7DAD00792F36 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1741B66F202A7DAD00792F36 /* Tonemapper */,
+				1741B678202A7DAD00792F36 /* TonemapperTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1741B66E202A7DAD00792F36 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1741B677202A7DAD00792F36 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1741B66B202A7DAD00792F36 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1741C4B42041DE7D00F60511 /* SegmentationShader.metal in Sources */,
+				1741C4B82042FE2700F60511 /* toGreyShaderIO.swift in Sources */,
+				1741C4B22041D45300F60511 /* CITonemapper.swift in Sources */,
+				1741C4BC2042FF7500F60511 /* extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1741B675202A7DAD00792F36 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1741B67F202A7DAD00792F36 /* TonemapperTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1741B67C202A7DAD00792F36 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1741B66F202A7DAD00792F36 /* Tonemapper */;
+			targetProxy = 1741B67B202A7DAD00792F36 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1741B682202A7DAD00792F36 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		1741B683202A7DAD00792F36 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		1741B685202A7DAD00792F36 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 529Y8Q5FKY;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = Tonemapper/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = PhilippWaxweiler.Tonemapper;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		1741B686202A7DAD00792F36 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 529Y8Q5FKY;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = Tonemapper/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = PhilippWaxweiler.Tonemapper;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+		1741B688202A7DAD00792F36 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 529Y8Q5FKY;
+				INFOPLIST_FILE = TonemapperTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = PhilippWaxweiler.TonemapperTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		1741B689202A7DAD00792F36 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 529Y8Q5FKY;
+				INFOPLIST_FILE = TonemapperTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = PhilippWaxweiler.TonemapperTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1741B66A202A7DAC00792F36 /* Build configuration list for PBXProject "Tonemapper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1741B682202A7DAD00792F36 /* Debug */,
+				1741B683202A7DAD00792F36 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1741B684202A7DAD00792F36 /* Build configuration list for PBXNativeTarget "Tonemapper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1741B685202A7DAD00792F36 /* Debug */,
+				1741B686202A7DAD00792F36 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1741B687202A7DAD00792F36 /* Build configuration list for PBXNativeTarget "TonemapperTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1741B688202A7DAD00792F36 /* Debug */,
+				1741B689202A7DAD00792F36 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1741B667202A7DAC00792F36 /* Project object */;
+}
