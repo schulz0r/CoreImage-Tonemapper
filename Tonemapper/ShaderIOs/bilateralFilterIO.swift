@@ -30,10 +30,10 @@ final class bilateralFilterShaderIO: MTKPIOProvider {
         let gaussCurveEnd = (KernelSize_s - 1) / 2
         let gaussCoefficients = (-gaussCurveEnd...gaussCurveEnd).map{ exp(-0.5 * powf(Float($0) / sigma_spatial, 2.0)) / (sigma_spatial * sqrt(2 * Float.pi)) }
         // outer product gives Kernel (cannot use separability with bilateral filter?)
-        var KernelCoefficients = gaussCoefficients.map{ Coeff in gaussCoefficients.map{Coeff * $0} }
+        var KernelCoefficients = gaussCoefficients.flatMap{ Coeff in gaussCoefficients.map{Coeff * $0} }
         
         guard
-            let Kernel_ = MTKPDevice.instance.makeBuffer(bytes: &KernelCoefficients, length: MemoryLayout<Float>.size * KernelSize_s * KernelSize_s, options: .storageModeManaged),
+            let Kernel_ = MTKPDevice.instance.makeBuffer(bytes: &KernelCoefficients, length: MemoryLayout<Float>.size * KernelCoefficients.count, options: .storageModeManaged),
             let KernelSize_ = MTKPDevice.instance.makeBuffer(bytes: &KernelSize_s, length: MemoryLayout<uint>.size, options: .storageModeManaged),
             let sigma_r_ = MTKPDevice.instance.makeBuffer(bytes: &sigma_buffer, length: MemoryLayout<Float>.size, options: .storageModeManaged)
         else {
