@@ -27,7 +27,8 @@ final class bilateralFilterShaderIO: MTKPIOProvider {
         }
         
         // generate one dimensional gaussian
-        let gaussCoefficients = (0..<KernelSize_s).map{ exp(-0.5 * powf(Float($0) / sigma_spatial, 2.0)) / (sigma_spatial * sqrt(2 * Float.pi)) }
+        let gaussCurveEnd = (KernelSize_s - 1) / 2
+        let gaussCoefficients = (-gaussCurveEnd...gaussCurveEnd).map{ exp(-0.5 * powf(Float($0) / sigma_spatial, 2.0)) / (sigma_spatial * sqrt(2 * Float.pi)) }
         // outer product gives Kernel (cannot use separability with bilateral filter?)
         var KernelCoefficients = gaussCoefficients.map{ Coeff in gaussCoefficients.map{Coeff * $0} }
         
