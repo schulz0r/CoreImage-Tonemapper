@@ -24,4 +24,8 @@ extension MTLTexture {
         
         return Descriptor
     }
+    
+    func size() -> MTLSize {
+        return MTLSizeMake(self.width, self.height, self.depth)
+    }
 }
