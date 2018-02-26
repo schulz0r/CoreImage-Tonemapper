@@ -60,14 +60,14 @@ kernel void bilateralFilter(texture2d<half, access::read> inTexture [[texture(0)
     
     half result = 0, weights = 0;
     
-    Window<half> BilateralWindow(KernelSize);
+    Window<half> FilterWindow(KernelSize);
     const half x = inTexture.read(gid).x;
     
-    BilateralWindow.loadPixelNeighbood(gid, inTexture);
+    FilterWindow.loadPixelNeighbood(gid, inTexture);
     
-    for(uint i = 0; i < BilateralWindow.area(); i++){
-        const half weight = KernelCoefficients[i] * gaussianPDF(abs(BilateralWindow[i] - x), Sigma_pixelDistance);
-        result += x * weight;
+    for(uint y = 0; y < FilterWindow.area(); y++){
+        const half weight = KernelCoefficients[y] * gaussianPDF(abs(FilterWindow[y] - x), Sigma_pixelDistance);
+        result += FilterWindow[y] * weight;
         weights += weight;
     }
     
