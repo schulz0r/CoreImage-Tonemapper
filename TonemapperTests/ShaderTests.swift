@@ -27,9 +27,16 @@ class TonemapperTests: XCTestCase {
             TestTexture = try textureLoader.newTexture(URL: pictureURL, options: nil)
         } catch let Error { fatalError(Error.localizedDescription) }
         
+        let descriptor = TestTexture.getDescriptor()
+        descriptor.pixelFormat = .r16Float
+        guard let bilateralOutputTexture = MTKPDevice.instance.makeTexture(descriptor: descriptor) else {
+            fatalError()
+        }
+        
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: toGrayShaderIO(image: TestTexture)))
-        assets.add(shader: MTKPShader(name: "bilateralFilter", io: toGrayShaderIO(image: TestTexture)))
+        assets.add(shader: MTKPShader(name: "bilateralFilter", io: bilateralFilterShaderIO(image: assets["toGray"]!.textures![1]!, outTexture:
+            bilateralOutputTexture, sigma_spatial: 2, sigma_range: 0.1)))
         
         computer = SegmentationProcessor(assets: assets)
     }
@@ -54,7 +61,18 @@ class TonemapperTests: XCTestCase {
     }
     
     func testBilateralFilter() {
+        guard let filteredTexture = computer.assets["bilateralFilter"]?.textures?[1] else {
+            fatalError()
+        }
+        computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
+        computer.encode("toGray")
+        computer.encode("bilateralFilter")
+        computer.commandBuffer.commit()
+        computer.commandBuffer.waitUntilCompleted()
         
+        let Image = CIImage(mtlTexture: filteredTexture, options: nil)!
+        
+        Image.write(url: desktopURL.appendingPathComponent("BilateralFilterShader.png"))
     }
     
     func testPerformanceExample() {

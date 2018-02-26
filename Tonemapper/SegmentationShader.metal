@@ -32,12 +32,13 @@ struct Window {
     Window(uint size) : size(size) { }
     
     void loadPixelNeighbood(uint2 aroundCenter, texture2d<T, access::read> fromTexture) {
+        const int halfWindowSize = (size - 1) / 2;
         // are pixels outside the image border? origin of window is 0 : origin is shifted by size-1/2 relative to the center
-        uint2 origin = select(aroundCenter - ((size - 1) / 2), uint2(0), int2(aroundCenter) - int2((size - 1) / 2) < 0);
+        uint2 origin = select(aroundCenter - halfWindowSize, uint2(0), (int2(aroundCenter) - halfWindowSize) < 0);
         
-        for(uint i = origin.x; i < size; i++) {
-            for(uint j = origin.y; j < size; j++) {
-               data[i + size * j] = fromTexture.read( uint2(i,j) ).x;
+        for(int i = 0; i < size; i++) {
+            for(uint j = 0; j < size; j++) {
+               data[i + size * j] = fromTexture.read( uint2(origin.x + i, origin.y + j) ).x;
             }
         }
     }
