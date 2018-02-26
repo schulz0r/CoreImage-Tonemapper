@@ -67,7 +67,7 @@ kernel void bilateralFilter(texture2d<half, access::read> inTexture [[texture(0)
     
     for(uint i = 0; i < BilateralWindow.area(); i++){
         const half weight = KernelCoefficients[i] * gaussianPDF(abs(BilateralWindow[i] - x), Sigma_pixelDistance);
-        result += x + weight;
+        result += x * weight;
         weights += weight;
     }
     
