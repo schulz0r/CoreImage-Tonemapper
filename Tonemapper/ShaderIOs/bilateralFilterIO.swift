@@ -49,7 +49,7 @@ final class bilateralFilterShaderIO: MTKPIOProvider {
     }
     
     func fetchBuffers() -> [MTLBuffer]? {
-        return [Kernel]
+        return [Kernel, KernelSize, Sigma_r]
     }
 }
 
