@@ -78,25 +78,90 @@ kernel void bilateralFilter(texture2d<half, access::read> inTexture [[texture(0)
 }
 
 /* k means clustering */
-struct cluster {
-    half SumOfValues;
-    uint numberOfElements;
-    
+// in order to calculate a new mean, we have to sum all pixel values belonging to a cluster and divide the sum by the number of pixels belonging to the cluster
+struct clusterSum {
+    half SumOfValues = 0;   // nominator
+    uint numberOfElements = 0;  // denominator
+    template<typename T>
+    clusterSum operator+=(const T other) {
+        this->SumOfValues += other.SumOfValues;
+        this->numberOfElements += other.numberOfElements;
+        return *this;
+    }
+    // this operator is being used to set counted elements to zero
+    clusterSum operator=(const int value) {
+        this->SumOfValues = value;
+        this->numberOfElements = value;
+        return *this;
+    }
 };
 
 kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
                    constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
-                   constant uint & number_k [[buffer(1)]],
-                   device half * buffer [[buffer(2)]],
-                   threadgroup SortAndCountElement<ushort, cluster> * sortBuffer [[threadgroup(0)]],
-                   uint2 gid [[thread_position_in_grid]]) {
+                   constant uint & clusterCount_k [[buffer(1)]],
+                   device clusterSum * buffer [[buffer(2)]],
+                   threadgroup SortAndCountElement<ushort, clusterSum> * sortBuffer [[threadgroup(0)]],
+                   uint2 gid [[thread_position_in_grid]],
+                   uint tid [[thread_index_in_threadgroup]],
+                   ushort2 dataLength [[threads_per_threadgroup]],
+                   uint2 tgid [[threadgroup_position_in_grid]],
+                   uint2 tgCount [[threadgroups_per_grid]]) {
     // read pixel
     const half dataPoint = grayTexture.read(gid).x;
     
     ushort label = 0; // label is the index of the closest cluster
     
-    // find closest center to data point
-    for(uchar i = 0, half closestDistance = 1.0; i < number_k; i++) {
-        
+    // label data point with the index of the closest center
+    half closestDistance = 1.0;
+    for(uchar i = 0; i < clusterCount_k; i++) {
+        if (abs(dataPoint - Means[i]) < closestDistance) {
+            closestDistance = abs(dataPoint - Means[i]);
+            label = i;
+        }
+    }
+    
+    const clusterSum oneElement = {dataPoint, 1}; // in this thread, we analyzed one data point which makes one element of the sum
+    sortBuffer[tid] = {label, oneElement};  // write cluster element to threadgroup memory, label indicates to which cluster element belongs
+    
+    // sum up all elements with respect to the cluster index using sort and count
+    // here, a sort and count algorithm is used for a collision free reduction of the data
+    bitonicSortAndCount(tid, (dataLength.x * dataLength.y) / 2, sortBuffer);
+    
+    // write partial sums to buffer
+    if(sortBuffer[tid].counter.numberOfElements != 0) {
+        const uint lengthOfAllClusterElements = clusterCount_k * sizeof(clusterSum);
+        const uint bufferOffset = lengthOfAllClusterElements * (tgid.x + tgCount.x * tgid.y);
+        buffer[bufferOffset + sortBuffer[tid].element * sizeof(clusterSum)] = sortBuffer[tid].counter;
+    }
+}
+
+/* reduction of the partial sums of cluster elements */
+kernel void kMeansSumUp(device float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
+                        constant uint & clusterCount_k [[buffer(1)]],
+                        constant uint & totalBufferlength [[buffer(2)]],
+                        constant clusterSum * buffer [[buffer(3)]],
+                        threadgroup clusterSum * tgBuffer [[threadgroup(0)]],
+                        uint clusterIndex [[threadgroup_position_in_grid]],
+                        uint tid [[thread_index_in_threadgroup]],
+                        ushort tgLength [[threads_per_threadgroup]]) {
+    
+    clusterSum partialSum;
+    // each threadgroup sums up partial sums for the cluster with the respective index (threadgroup 1 sums up results for cluster 1 etc.).
+    for(uint position = (tid * clusterCount_k) + clusterIndex; position <= totalBufferlength; position += clusterCount_k * tgLength) {
+        partialSum += buffer[position];
+    }
+    
+    // put all partial sums into a threadgroup buffer and finally reduce it to one complete sum
+    tgBuffer[tid] = partialSum;
+    for(uint s = tid / 2; s > 0; s>>=1) {
+        if(tid < s) {
+            tgBuffer[tid] += tgBuffer[tid + s];
+        }
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+    }
+    
+    // calculate and save new center
+    if(tid == 0) {
+        Means[clusterIndex] = tgBuffer[0].SumOfValues / tgBuffer[0].numberOfElements;
     }
 }
