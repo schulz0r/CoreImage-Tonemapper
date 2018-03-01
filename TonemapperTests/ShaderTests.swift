@@ -36,7 +36,7 @@ class TonemapperTests: XCTestCase {
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: toGrayShaderIO(image: TestTexture)))
         assets.add(shader: MTKPShader(name: "bilateralFilter", io: bilateralFilterShaderIO(image: assets["toGray"]!.textures![1]!, outTexture:
-            bilateralOutputTexture, sigma_spatial: 2, sigma_range: 0.1)))
+            bilateralOutputTexture, sigma_spatial: 2, sigma_range: 0.2)))
         
         computer = SegmentationProcessor(assets: assets)
     }

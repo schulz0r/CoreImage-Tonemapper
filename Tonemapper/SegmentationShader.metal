@@ -8,8 +8,9 @@
 
 #include <metal_stdlib>
 using namespace metal;
+#include "SortAndCount.h"
 
-
+/* Convert a colour image to a gray scale image */
 kernel void toGray(texture2d<half, access::read> inTexture [[texture(0)]],
                    texture2d<half, access::write> outTexture [[texture(1)]],
                    uint2 gid [[thread_position_in_grid]])
@@ -20,6 +21,7 @@ kernel void toGray(texture2d<half, access::read> inTexture [[texture(0)]],
     outTexture.write(grayColor, gid);
 }
 
+/* A naive implementation of a bilateral filter */
 half gaussianPDF(half x, half sigma) {
     return (M_SQRT1_2_H * M_2_SQRTPI_H) / (2 * sigma) * metal::exp(-0.5 * pow(x / sigma, 2.h));
 }
@@ -52,7 +54,7 @@ struct Window {
     }
 };
 
-kernel void bilateralFilter(texture2d<half, access::read> inTexture [[texture(0)]], // expects a grayscale image with half precision grey pixels
+kernel void bilateralFilter(texture2d<half, access::read> inTexture [[texture(0)]], // expects a grayscale image with half precision gray pixels
                             texture2d<half, access::write> outTexture [[texture(1)]], // same as inTexture
                             constant float * KernelCoefficients [[buffer(0)]],  // Row-major linearly indexed coefficients
                             constant uint & KernelSize [[buffer(1)]],
@@ -73,4 +75,28 @@ kernel void bilateralFilter(texture2d<half, access::read> inTexture [[texture(0)
     }
     
     outTexture.write(result / weights, gid);
+}
+
+/* k means clustering */
+struct cluster {
+    half SumOfValues;
+    uint numberOfElements;
+    
+};
+
+kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
+                   constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
+                   constant uint & number_k [[buffer(1)]],
+                   device half * buffer [[buffer(2)]],
+                   threadgroup SortAndCountElement<ushort, cluster> * sortBuffer [[threadgroup(0)]],
+                   uint2 gid [[thread_position_in_grid]]) {
+    // read pixel
+    const half dataPoint = grayTexture.read(gid).x;
+    
+    ushort label = 0; // label is the index of the closest cluster
+    
+    // find closest center to data point
+    for(uchar i = 0, half closestDistance = 1.0; i < number_k; i++) {
+        
+    }
 }
