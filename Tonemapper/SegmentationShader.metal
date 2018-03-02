@@ -115,8 +115,9 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
     // label data point with the index of the closest center
     half closestDistance = 1.0;
     for(uchar i = 0; i < clusterCount_k; i++) {
-        if (abs(dataPoint - Means[i]) < closestDistance) {
-            closestDistance = abs(dataPoint - Means[i]);
+        const half dist = abs(dataPoint - Means[i]);
+        if (dist < closestDistance) {
+            closestDistance = dist;
             label = i;
         }
     }
@@ -154,7 +155,7 @@ kernel void kMeansSumUp(device float * Means [[buffer(0)]],  // Row-major linear
     
     // put all partial sums into a threadgroup buffer and finally reduce it to one complete sum
     tgBuffer[tid] = partialSum;
-    for(uint s = tid / 2; s > 0; s>>=1) {
+    for(uint s = tgLength / 2; s > 0; s>>=1) {
         if(tid < s) {
             tgBuffer[tid] += tgBuffer[tid + s];
         }
