@@ -13,18 +13,20 @@ import MetalKitPlus
 final class kMeansShaderIO: MTKPIOProvider {
     
     let inTexture : MTLTexture
-    let Means, meanCount_k, buffer : MTLBuffer
+    let Means, meanCount_k, buffer, bufferLen : MTLBuffer
     
     init(grayInputTexture: MTLTexture){
         self.inTexture = grayInputTexture
         
         var Means = Array<Float>(stride(from: 0, to: 1, by: 0.5)) // evenly distribute means over values
         var K = Means.count
+        var bufferLen:uint = uint(K * (grayInputTexture.width * grayInputTexture.height) / (16 * 16))
         
         guard
             let Means_ = MTKPDevice.instance.makeBuffer(bytes: &Means, length: K * MemoryLayout<Float>.size, options: .cpuCacheModeWriteCombined),
             let K_ = MTKPDevice.instance.makeBuffer(bytes: &K, length: MemoryLayout<Float>.size, options: .cpuCacheModeWriteCombined),
-            let Buffer_ = MTKPDevice.instance.makeBuffer(length: (MemoryLayout<uint>.size + MemoryLayout<Float>.size / 2) * K * (grayInputTexture.width * grayInputTexture.height) / (16 * 16), options: .storageModePrivate)
+            let Buffer_ = MTKPDevice.instance.makeBuffer(length: (MemoryLayout<uint>.size + MemoryLayout<Float>.size / 2) * Int(bufferLen), options: .storageModePrivate),
+            let BufferLen_ = MTKPDevice.instance.makeBuffer(bytes: &bufferLen, length: MemoryLayout<uint>.size, options: .cpuCacheModeWriteCombined)
             else {
                 fatalError()
         }
@@ -32,6 +34,7 @@ final class kMeansShaderIO: MTKPIOProvider {
         self.Means = Means_
         self.meanCount_k = K_
         self.buffer = Buffer_
+        self.bufferLen = BufferLen_
     }
     
     func fetchTextures() -> [MTLTexture?]? {
