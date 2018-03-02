@@ -18,7 +18,7 @@ final class kMeansShaderIO: MTKPIOProvider {
     init(grayInputTexture: MTLTexture){
         self.inTexture = grayInputTexture
         
-        var Means = Array<Float>(stride(from: 0, to: 1, by: 0.5)) // evenly distribute means over values
+        var Means = Array<Float>(stride(from: 0, to: 1, by: 0.5)) + [1] // evenly distribute means over values
         var K = Means.count
         var bufferLen:uint = uint(K * (grayInputTexture.width * grayInputTexture.height) / (16 * 16))
         
@@ -42,6 +42,6 @@ final class kMeansShaderIO: MTKPIOProvider {
     }
     
     func fetchBuffers() -> [MTLBuffer]? {
-        return [Means, meanCount_k, buffer]
+        return [Means, meanCount_k, buffer, bufferLen]
     }
 }
