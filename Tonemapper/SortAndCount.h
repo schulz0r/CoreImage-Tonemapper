@@ -42,14 +42,14 @@ void bitonicSortAndCount(const uint tid, const uint half_of_dataLength, threadgr
                     swap(data[i1], data[i2]);
                 } else if (data[i1].element == data[i2].element) {
                     data[i2].counter += data[i1].counter;
-                    data[i1].counter = 0;
+                    data[i1].counter = {0};
                 }
             } else { // if odd
                 if(data[i1].element < data[i2].element) {
                     swap(data[i1], data[i2]);
                 } else if (data[i1].element == data[i2].element) {
                     data[i1].counter += data[i2].counter;
-                    data[i2].counter = 0;
+                    data[i2].counter = {0};
                 }
             }
             

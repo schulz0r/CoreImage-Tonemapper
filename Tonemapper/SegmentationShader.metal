@@ -88,13 +88,14 @@ struct clusterSum {
         this->numberOfElements += other.numberOfElements;
         return *this;
     }
-    // this operator is being used to set counted elements to zero
-    clusterSum operator=(const int value) {
-        this->SumOfValues = value;
-        this->numberOfElements = value;
-        return *this;
-    }
 };
+
+
+threadgroup clusterSum & operator+=(threadgroup clusterSum & left, const threadgroup clusterSum & other) {
+    left.SumOfValues += other.SumOfValues;
+    left.numberOfElements += other.numberOfElements;
+    return left;
+}
 
 kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
                    constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
