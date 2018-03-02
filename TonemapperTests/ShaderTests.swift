@@ -32,12 +32,16 @@ class TonemapperTests: XCTestCase {
         guard let bilateralOutputTexture = MTKPDevice.instance.makeTexture(descriptor: descriptor) else {
             fatalError()
         }
-        
+        let kMeansTGLength = [(MemoryLayout<uint>.size + MemoryLayout<uint>.size + MemoryLayout<Float>.size) * 256] // ushort + uint + half becomes uint + uint + float due to memory alignment
+        let kMeansSummationTGLength = [(MemoryLayout<uint>.size + MemoryLayout<Float>.size) * 256]
+        let kMeansIO = kMeansShaderIO(grayInputTexture: bilateralOutputTexture)
+
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: toGrayShaderIO(image: TestTexture)))
         assets.add(shader: MTKPShader(name: "bilateralFilter", io: bilateralFilterShaderIO(image: assets["toGray"]!.textures![1]!, outTexture:
-            bilateralOutputTexture, sigma_spatial: 2, sigma_range: 0.2)))
-        
+            bilateralOutputTexture, sigma_spatial: 1.5, sigma_range: 0.1)))
+        assets.add(shader: MTKPShader(name: "kMeans", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (16, 16, 1), tgMemLength: kMeansTGLength)))
+        assets.add(shader: MTKPShader(name: "kMeansSumUp", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (256, 1, 1), tgMemLength: kMeansSummationTGLength)))
         computer = SegmentationProcessor(assets: assets)
     }
     
@@ -75,11 +79,22 @@ class TonemapperTests: XCTestCase {
         Image.write(url: desktopURL.appendingPathComponent("BilateralFilterShader.png"))
     }
     
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testkMeans() {
+        guard let Means_gpu = computer.assets["kMeans"]?.buffers?[0] else {
+            fatalError()
         }
+        var Means = [Float](repeating: 0, count: 3)
+        
+        computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
+        computer.encode("toGray")
+        computer.encode("bilateralFilter")
+        computer.encode("kMeans")
+        computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1))
+        computer.commandBuffer.commit()
+        computer.commandBuffer.waitUntilCompleted()
+        
+        memcpy(&Means, Means_gpu.contents(), Means_gpu.length)
+        
+        XCTAssert(Means.reduce(true){$0 && $1.isNormal}, "Means are: \(Means). Algorithm has failed.")
     }
-    
 }
