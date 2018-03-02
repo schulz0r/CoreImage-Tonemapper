@@ -20,6 +20,7 @@
 		1741C4C22044598900F60511 /* SegmentationProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4C12044598900F60511 /* SegmentationProcessor.swift */; };
 		1741C4C42044642D00F60511 /* MetalKitPlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1741C4B92042FE5E00F60511 /* MetalKitPlus.framework */; };
 		1741C4C620478E1A00F60511 /* SortAndCount.h in Headers */ = {isa = PBXBuildFile; fileRef = 1741C4C520478E1A00F60511 /* SortAndCount.h */; };
+		1741C4C82049D36100F60511 /* kMeansShaderIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4C72049D36100F60511 /* kMeansShaderIO.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		1741C4BF204455C900F60511 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		1741C4C12044598900F60511 /* SegmentationProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentationProcessor.swift; sourceTree = "<group>"; };
 		1741C4C520478E1A00F60511 /* SortAndCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortAndCount.h; sourceTree = "<group>"; };
+		1741C4C72049D36100F60511 /* kMeansShaderIO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = kMeansShaderIO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +139,7 @@
 			children = (
 				1741C4B72042FE2700F60511 /* toGrayShaderIO.swift */,
 				1741C4BD20430B1000F60511 /* bilateralFilterIO.swift */,
+				1741C4C72049D36100F60511 /* kMeansShaderIO.swift */,
 			);
 			path = ShaderIOs;
 			sourceTree = "<group>";
@@ -266,6 +269,7 @@
 				1741C4B82042FE2700F60511 /* toGrayShaderIO.swift in Sources */,
 				1741C4B22041D45300F60511 /* CITonemapper.swift in Sources */,
 				1741C4BC2042FF7500F60511 /* extensions.swift in Sources */,
+				1741C4C82049D36100F60511 /* kMeansShaderIO.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

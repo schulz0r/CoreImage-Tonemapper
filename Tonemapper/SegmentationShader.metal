@@ -139,8 +139,8 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
 /* reduction of the partial sums of cluster elements */
 kernel void kMeansSumUp(device float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
                         constant uint & clusterCount_k [[buffer(1)]],
-                        constant uint & totalBufferlength [[buffer(2)]],
-                        constant clusterSum * buffer [[buffer(3)]],
+                        constant clusterSum * buffer [[buffer(2)]],
+                        constant uint & totalBufferlength [[buffer(3)]],
                         threadgroup clusterSum * tgBuffer [[threadgroup(0)]],
                         uint clusterIndex [[threadgroup_position_in_grid]],
                         uint tid [[thread_index_in_threadgroup]],
