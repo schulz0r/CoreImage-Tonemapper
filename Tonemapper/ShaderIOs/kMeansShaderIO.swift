@@ -6,6 +6,7 @@
 //  Copyright © 2018 Philipp Waxweiler. All rights reserved.
 //
 
+import Darwin
 import Metal
 import MetalKit
 import MetalKitPlus
@@ -20,7 +21,7 @@ final class kMeansShaderIO: MTKPIOProvider {
         
         var Means = Array<Float>(stride(from: 0, to: 1, by: 0.5)) + [1] // evenly distribute means over values
         var K = Means.count
-        var bufferLen:uint = uint(K * grayInputTexture.width * grayInputTexture.height / (16 * 16))
+        var bufferLen:uint = uint( K * Int(ceil(Float(grayInputTexture.width) / 16.0) * ceil(Float(grayInputTexture.height) / 16.0)) )
         
         guard
             let Means_ = MTKPDevice.instance.makeBuffer(bytes: &Means, length: K * MemoryLayout<Float>.size, options: .cpuCacheModeWriteCombined),
