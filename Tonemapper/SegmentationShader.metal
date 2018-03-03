@@ -83,6 +83,12 @@ struct clusterSum {
     half SumOfValues = 0;   // nominator
     uint numberOfElements = 0;  // denominator
     template<typename T>
+    T operator=(const T other){
+        this->SumOfValues = other.SumOfValues;
+        this->numberOfElements = other.numberOfElements;
+        return *this;
+    }
+    template<typename T>
     clusterSum operator+=(const T other) {
         this->SumOfValues += other.SumOfValues;
         this->numberOfElements += other.numberOfElements;
@@ -101,16 +107,20 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
                    constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
                    constant uint & clusterCount_k [[buffer(1)]],
                    device clusterSum * buffer [[buffer(2)]],
-                   threadgroup SortAndCountElement<ushort, clusterSum> * sortBuffer [[threadgroup(0)]],
+                   threadgroup SortAndCountElement<uint, clusterSum> * sortBuffer [[threadgroup(0)]],
                    uint2 gid [[thread_position_in_grid]],
                    uint tid [[thread_index_in_threadgroup]],
                    ushort2 dataLength [[threads_per_threadgroup]],
                    uint2 tgid [[threadgroup_position_in_grid]],
                    uint2 tgCount [[threadgroups_per_grid]]) {
+    // initialize TG memory
+    for(uint i = tid; i < 256; i += 256) {
+        sortBuffer[i] = {0, {0,0}};
+    }
+    
     // read pixel
     const half dataPoint = grayTexture.read(gid).x;
-    
-    ushort label = 0; // label is the index of the closest cluster
+    uint label = 0; // label is the index of the closest cluster
     
     // label data point with the index of the closest center
     half closestDistance = 1.0;
@@ -131,9 +141,8 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
     
     // write partial sums to buffer
     if(sortBuffer[tid].counter.numberOfElements != 0) {
-        const uint lengthOfAllClusterElements = clusterCount_k * sizeof(clusterSum);
-        const uint bufferOffset = lengthOfAllClusterElements * (tgid.x + tgCount.x * tgid.y);
-        buffer[bufferOffset + sortBuffer[tid].element * sizeof(clusterSum)] = sortBuffer[tid].counter;
+        const uint bufferOffset = tgid.x + tgid.y * tgCount.x;
+        buffer[clusterCount_k * bufferOffset + sortBuffer[tid].element] = sortBuffer[tid].counter;
     }
 }
 
@@ -147,9 +156,14 @@ kernel void kMeansSumUp(device float * Means [[buffer(0)]],  // Row-major linear
                         uint tid [[thread_index_in_threadgroup]],
                         ushort tgLength [[threads_per_threadgroup]]) {
     
-    clusterSum partialSum;
+    // initialize TG memory
+    for(uint i = tid; i < 256; i += 256) {
+        tgBuffer[i] = {0,0};
+    }
+    
+    clusterSum partialSum = {0};
     // each threadgroup sums up partial sums for the cluster with the respective index (threadgroup 1 sums up results for cluster 1 etc.).
-    for(uint position = (tid * clusterCount_k) + clusterIndex; position <= totalBufferlength; position += clusterCount_k * tgLength) {
+    for(uint position = (tid * clusterCount_k) + clusterIndex, offset = clusterCount_k * tgLength; position < totalBufferlength; position += offset) {
         partialSum += buffer[position];
     }
     
