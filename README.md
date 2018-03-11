@@ -1,4 +1,7 @@
 # CoreImage-Tonemapper
+
+# Please note that this project is still W.I.P. and is not complete yet
+
 A TMO with local contrast enhancement implemented as a CIImageProcessorKernel.
 
 This tonemapper first segments the image into regions of similar brightness with C-Means clustering. Then, each region will be tonemapped independently with parameters obtained exclusively from the respective region. To avoid seams between the zones, and image pyramid blending algorithm will be used to merge all regions into an tonemapped image. This will be the output of the first stage of the tonemapping operator (TMO).
