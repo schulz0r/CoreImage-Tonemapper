@@ -10,6 +10,8 @@
 using namespace metal;
 #include "SortAndCount.h"
 
+/* --- PREPROCESSING --- */
+
 /* Convert a colour image to a gray scale image */
 kernel void toGray(texture2d<half, access::read> inTexture [[texture(0)]],
                    texture2d<half, access::write> outTexture [[texture(1)]],
@@ -77,7 +79,32 @@ kernel void bilateralFilter(texture2d<half, access::read> inTexture [[texture(0)
     outTexture.write(result / weights, gid);
 }
 
-/* k means clustering */
+/* --- KMEANS CLUSTERING --- */
+
+// Assign each pixel to a cluster according to its distance to a mean
+kernel void cluster(texture2d<half, access::read> grayTexture [[texture(0)]],
+                    texture2d<ushort, access::write> labels [[texture(1)]],
+                    constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
+                    constant uint & clusterCount_k [[buffer(1)]],
+                    uint2 gid [[thread_position_in_grid]]) {
+    
+    uchar label = 0;
+    half closestDistance = 1.0;
+    
+    const half dataPoint = grayTexture.read(gid).x;
+    
+    for(uchar i = 0; i < clusterCount_k; i++) {
+        const half dist = abs(dataPoint - Means[i]);
+        
+        if (dist < closestDistance) {
+            closestDistance = dist;
+            label = i;
+        }
+    }
+    
+    labels.write(label, gid);
+}
+
 // in order to calculate a new mean, we have to sum all pixel values belonging to a cluster and divide the sum by the number of pixels belonging to the cluster
 struct clusterSum {
     half SumOfValues = 0;   // nominator
@@ -104,6 +131,7 @@ threadgroup clusterSum & operator+=(threadgroup clusterSum & left, const threadg
 }
 
 kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
+                   texture2d<ushort, access::read> labels [[texture(1)]],
                    constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
                    constant uint & clusterCount_k [[buffer(1)]],
                    device clusterSum * buffer [[buffer(2)]],
@@ -120,17 +148,10 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
     
     // read pixel
     const half dataPoint = grayTexture.read(gid).x;
-    uint label = 0; // label is the index of the closest cluster
+    uchar label = labels.read(gid).x;
     
     // label data point with the index of the closest center
-    half closestDistance = 1.0;
-    for(uchar i = 0; i < clusterCount_k; i++) {
-        const half dist = abs(dataPoint - Means[i]);
-        if (dist < closestDistance) {
-            closestDistance = dist;
-            label = i;
-        }
-    }
+    
     
     const clusterSum oneElement = {dataPoint, 1}; // in this thread, we analyzed one data point which makes one element of the sum
     sortBuffer[tid] = {label, oneElement};  // write cluster element to threadgroup memory, label indicates to which cluster element belongs
