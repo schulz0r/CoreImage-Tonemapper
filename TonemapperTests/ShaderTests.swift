@@ -34,12 +34,13 @@ class TonemapperTests: XCTestCase {
         }
         let kMeansTGLength = [(MemoryLayout<uint>.size + MemoryLayout<uint>.size + MemoryLayout<Float>.size) * 256] // ushort + uint + half becomes uint + uint + float due to memory alignment
         let kMeansSummationTGLength = [(MemoryLayout<uint>.size + MemoryLayout<Float>.size) * 256]
-        let kMeansIO = kMeansShaderIO(grayInputTexture: bilateralOutputTexture)
+        let kMeansIO = kMeansShader_TestIO(grayInputTexture: bilateralOutputTexture)
 
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: toGrayShaderIO(image: TestTexture)))
         assets.add(shader: MTKPShader(name: "bilateralFilter", io: bilateralFilterShaderIO(image: assets["toGray"]!.textures![1]!, outTexture:
             bilateralOutputTexture, sigma_spatial: 1.5, sigma_range: 0.1)))
+        assets.add(shader: MTKPShader(name: "cluster", io: kMeansIO))
         assets.add(shader: MTKPShader(name: "kMeans", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (16, 16, 1), tgMemLength: kMeansTGLength)))
         assets.add(shader: MTKPShader(name: "kMeansSumUp", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (256, 1, 1), tgMemLength: kMeansSummationTGLength)))
         computer = SegmentationProcessor(assets: assets)
@@ -54,10 +55,8 @@ class TonemapperTests: XCTestCase {
         guard let grayTexture = computer.assets["toGray"]?.textures?[1] else {
             fatalError()
         }
-        computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
-        computer.encode("toGray")
-        computer.commandBuffer.commit()
-        computer.commandBuffer.waitUntilCompleted()
+        
+        computer.execute("toGray")
         
         let Image = CIImage(mtlTexture: grayTexture, options: nil)!
         
@@ -77,6 +76,22 @@ class TonemapperTests: XCTestCase {
         let Image = CIImage(mtlTexture: filteredTexture, options: nil)!
         
         Image.write(url: desktopURL.appendingPathComponent("BilateralFilterShader.png"))
+    }
+    
+    func testClustering() {
+        guard let filteredTexture = computer.assets["cluster"]?.textures?[1] else {
+            fatalError()
+        }
+        computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
+        computer.encode("toGray")
+        computer.encode("bilateralFilter")
+        computer.encode("cluster")
+        computer.commandBuffer.commit()
+        computer.commandBuffer.waitUntilCompleted()
+        
+        let Image = CIImage(mtlTexture: filteredTexture, options: nil)!
+        
+        Image.write(url: desktopURL.appendingPathComponent("ClusteringShader.png"))
     }
     
     func testkMeans() {

@@ -81,8 +81,8 @@ kernel void bilateralFilter(texture2d<half, access::read> inTexture [[texture(0)
 
 /* --- KMEANS CLUSTERING --- */
 
-// Assign each pixel to a cluster according to its distance to a mean
-kernel void cluster(texture2d<half, access::read> grayTexture [[texture(0)]],
+// Assign each pixel to the cluster with the smalest distance to the center
+kernel void label(texture2d<half, access::read> grayTexture [[texture(0)]],
                     texture2d<ushort, access::write> labels [[texture(1)]],
                     constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
                     constant uint & clusterCount_k [[buffer(1)]],
@@ -103,6 +103,30 @@ kernel void cluster(texture2d<half, access::read> grayTexture [[texture(0)]],
     }
     
     labels.write(label, gid);
+}
+
+// cluster the image pixels. it is similar to labeling, but the center means are written to the output image instead the index of the corresponding cluster. this function is used in the testing module.
+kernel void cluster(texture2d<half, access::read> grayTexture [[texture(0)]],
+                    texture2d<half, access::write> clusteredImage [[texture(1)]],
+                    constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
+                    constant uint & clusterCount_k [[buffer(1)]],
+                    uint2 gid [[thread_position_in_grid]]) {
+    
+    uchar label = 0;
+    half closestDistance = 1.0;
+    
+    const half dataPoint = grayTexture.read(gid).x;
+    
+    for(uchar i = 0; i < clusterCount_k; i++) {
+        const half dist = abs(dataPoint - Means[i]);
+        
+        if (dist < closestDistance) {
+            closestDistance = dist;
+            label = i;
+        }
+    }
+    
+    clusteredImage.write(Means[label], gid);
 }
 
 // in order to calculate a new mean, we have to sum all pixel values belonging to a cluster and divide the sum by the number of pixels belonging to the cluster
