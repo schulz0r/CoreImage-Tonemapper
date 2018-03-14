@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Metal
 
 extension MTLTexture {
     func getDescriptor() -> MTLTextureDescriptor {
