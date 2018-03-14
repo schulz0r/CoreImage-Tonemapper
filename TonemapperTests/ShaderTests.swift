@@ -34,13 +34,15 @@ class TonemapperTests: XCTestCase {
         }
         let kMeansTGLength = [(MemoryLayout<uint>.size + MemoryLayout<uint>.size + MemoryLayout<Float>.size) * 256] // ushort + uint + half becomes uint + uint + float due to memory alignment
         let kMeansSummationTGLength = [(MemoryLayout<uint>.size + MemoryLayout<Float>.size) * 256]
-        let kMeansIO = kMeansShader_TestIO(grayInputTexture: bilateralOutputTexture)
+        let clusterTestIO = kMeansShader_TestIO(grayInputTexture: bilateralOutputTexture)
+        let kMeansIO = kMeansShaderIO(grayInputTexture: bilateralOutputTexture)
 
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: toGrayShaderIO(image: TestTexture)))
         assets.add(shader: MTKPShader(name: "bilateralFilter", io: bilateralFilterShaderIO(image: assets["toGray"]!.textures![1]!, outTexture:
             bilateralOutputTexture, sigma_spatial: 1.5, sigma_range: 0.1)))
-        assets.add(shader: MTKPShader(name: "cluster", io: kMeansIO))
+        assets.add(shader: MTKPShader(name: "cluster", io: clusterTestIO))
+        assets.add(shader: MTKPShader(name: "label", io: kMeansIO))
         assets.add(shader: MTKPShader(name: "kMeans", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (16, 16, 1), tgMemLength: kMeansTGLength)))
         assets.add(shader: MTKPShader(name: "kMeansSumUp", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (256, 1, 1), tgMemLength: kMeansSummationTGLength)))
         computer = SegmentationProcessor(assets: assets)
@@ -101,7 +103,7 @@ class TonemapperTests: XCTestCase {
         var Means = [Float](repeating: 0, count: 3)
         
         computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
-        computer.encode("cluster")
+        computer.encode("label")
         computer.encode("kMeans")
         computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1))
         computer.commandBuffer.commit()
