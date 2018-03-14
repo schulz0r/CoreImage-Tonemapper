@@ -133,12 +133,7 @@ kernel void cluster(texture2d<half, access::read> grayTexture [[texture(0)]],
 struct clusterSum {
     half SumOfValues = 0;   // nominator
     uint numberOfElements = 0;  // denominator
-    template<typename T>
-    T operator=(const T other){
-        this->SumOfValues = other.SumOfValues;
-        this->numberOfElements = other.numberOfElements;
-        return *this;
-    }
+    
     template<typename T>
     clusterSum operator+=(const T other) {
         this->SumOfValues += other.SumOfValues;
@@ -174,11 +169,9 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
     const half dataPoint = grayTexture.read(gid).x;
     uchar label = labels.read(gid).x;
     
-    // label data point with the index of the closest center
-    
-    
     const clusterSum oneElement = {dataPoint, 1}; // in this thread, we analyzed one data point which makes one element of the sum
     sortBuffer[tid] = {label, oneElement};  // write cluster element to threadgroup memory, label indicates to which cluster element belongs
+    threadgroup_barrier(mem_flags::mem_threadgroup);
     
     // sum up all elements with respect to the cluster index using sort and count
     // here, a sort and count algorithm is used for a collision free reduction of the data

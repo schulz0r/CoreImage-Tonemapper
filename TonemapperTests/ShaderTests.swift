@@ -101,8 +101,7 @@ class TonemapperTests: XCTestCase {
         var Means = [Float](repeating: 0, count: 3)
         
         computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
-        computer.encode("toGray")
-        computer.encode("bilateralFilter")
+        computer.encode("cluster")
         computer.encode("kMeans")
         computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1))
         computer.commandBuffer.commit()
