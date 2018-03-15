@@ -131,7 +131,7 @@ kernel void cluster(texture2d<half, access::read> grayTexture [[texture(0)]],
 
 // in order to calculate a new mean, we have to sum all pixel values belonging to a cluster and divide the sum by the number of pixels belonging to the cluster
 struct clusterSum {
-    half SumOfValues = 0;   // nominator
+    float SumOfValues = 0;   // nominator
     uint numberOfElements = 0;  // denominator
     
     template<typename T>
@@ -160,14 +160,10 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
                    ushort2 dataLength [[threads_per_threadgroup]],
                    uint2 tgid [[threadgroup_position_in_grid]],
                    uint2 tgCount [[threadgroups_per_grid]]) {
-    // initialize TG memory
-    for(uint i = tid; i < 256; i += 256) {
-        sortBuffer[i] = {0, {0,0}};
-    }
     
     // read pixel
     const half dataPoint = grayTexture.read(gid).x;
-    uchar label = labels.read(gid).x;
+    const uchar label = labels.read(gid).x;
     
     const clusterSum oneElement = {dataPoint, 1}; // in this thread, we analyzed one data point which makes one element of the sum
     sortBuffer[tid] = {label, oneElement};  // write cluster element to threadgroup memory, label indicates to which cluster element belongs
@@ -179,8 +175,8 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
     
     // write partial sums to buffer
     if(sortBuffer[tid].counter.numberOfElements != 0) {
-        const uint bufferOffset = tgid.x + tgid.y * tgCount.x;
-        buffer[clusterCount_k * bufferOffset + sortBuffer[tid].element] = sortBuffer[tid].counter;
+        const uint linearThreadgroupIndex = tgid.x + tgid.y * tgCount.x;
+        buffer[clusterCount_k * linearThreadgroupIndex + sortBuffer[tid].element] = sortBuffer[tid].counter;
     }
 }
 
@@ -194,11 +190,6 @@ kernel void kMeansSumUp(device float * Means [[buffer(0)]],  // Row-major linear
                         uint tid [[thread_index_in_threadgroup]],
                         ushort tgLength [[threads_per_threadgroup]]) {
     
-    // initialize TG memory
-    for(uint i = tid; i < 256; i += 256) {
-        tgBuffer[i] = {0,0};
-    }
-    
     clusterSum partialSum = {0};
     // each threadgroup sums up partial sums for the cluster with the respective index (threadgroup 1 sums up results for cluster 1 etc.).
     for(uint position = (tid * clusterCount_k) + clusterIndex, offset = clusterCount_k * tgLength; position < totalBufferlength; position += offset) {
@@ -207,6 +198,8 @@ kernel void kMeansSumUp(device float * Means [[buffer(0)]],  // Row-major linear
     
     // put all partial sums into a threadgroup buffer and finally reduce it to one complete sum
     tgBuffer[tid] = partialSum;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+    
     for(uint s = tgLength / 2; s > 0; s>>=1) {
         if(tid < s) {
             tgBuffer[tid] += tgBuffer[tid + s];
