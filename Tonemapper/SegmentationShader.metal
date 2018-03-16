@@ -129,32 +129,12 @@ kernel void cluster(texture2d<half, access::read> grayTexture [[texture(0)]],
     clusteredImage.write(Means[label], gid);
 }
 
-// in order to calculate a new mean, we have to sum all pixel values belonging to a cluster and divide the sum by the number of pixels belonging to the cluster
-struct clusterSum {
-    float SumOfValues = 0;   // nominator
-    uint numberOfElements = 0;  // denominator
-    
-    template<typename T>
-    clusterSum operator+=(const T other) {
-        this->SumOfValues += other.SumOfValues;
-        this->numberOfElements += other.numberOfElements;
-        return *this;
-    }
-};
-
-
-threadgroup clusterSum & operator+=(threadgroup clusterSum & left, const threadgroup clusterSum & other) {
-    left.SumOfValues += other.SumOfValues;
-    left.numberOfElements += other.numberOfElements;
-    return left;
-}
-
 kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
                    texture2d<ushort, access::read> labels [[texture(1)]],
                    constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
                    constant uint & clusterCount_k [[buffer(1)]],
-                   device clusterSum * buffer [[buffer(2)]],
-                   threadgroup SortAndCountElement<uint, clusterSum> * sortBuffer [[threadgroup(0)]],
+                   device float * buffer [[buffer(2)]],
+                   threadgroup SortAndCountElement<uint, float> * sortBuffer [[threadgroup(0)]],
                    uint2 gid [[thread_position_in_grid]],
                    uint tid [[thread_index_in_threadgroup]],
                    ushort2 dataLength [[threads_per_threadgroup]],
@@ -165,8 +145,7 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
     const half dataPoint = grayTexture.read(gid).x;
     const uchar label = labels.read(gid).x;
     
-    const clusterSum oneElement = {dataPoint, 1}; // in this thread, we analyzed one data point which makes one element of the sum
-    sortBuffer[tid] = {label, oneElement};  // write cluster element to threadgroup memory, label indicates to which cluster element belongs
+    sortBuffer[tid] = {label, dataPoint};  // write pixel to threadgroup memory, label indicates to which cluster element belongs
     threadgroup_barrier(mem_flags::mem_threadgroup);
     
     // sum up all elements with respect to the cluster index using sort and count
@@ -174,7 +153,7 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
     bitonicSortAndCount(tid, (dataLength.x * dataLength.y) / 2, sortBuffer);
     
     // write partial sums to buffer
-    if(sortBuffer[tid].counter.numberOfElements != 0) {
+    if(sortBuffer[tid].counter != 0) {
         const uint linearThreadgroupIndex = tgid.x + tgid.y * tgCount.x;
         buffer[clusterCount_k * linearThreadgroupIndex + sortBuffer[tid].element] = sortBuffer[tid].counter;
     }
@@ -183,14 +162,14 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
 /* reduction of the partial sums of cluster elements */
 kernel void kMeansSumUp(device float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
                         constant uint & clusterCount_k [[buffer(1)]],
-                        constant clusterSum * buffer [[buffer(2)]],
+                        constant float * buffer [[buffer(2)]],
                         constant uint & totalBufferlength [[buffer(3)]],
-                        threadgroup clusterSum * tgBuffer [[threadgroup(0)]],
+                        threadgroup float * tgBuffer [[threadgroup(0)]],
                         uint clusterIndex [[threadgroup_position_in_grid]],
                         uint tid [[thread_index_in_threadgroup]],
                         ushort tgLength [[threads_per_threadgroup]]) {
     
-    clusterSum partialSum = {0};
+    float partialSum = 0;
     // each threadgroup sums up partial sums for the cluster with the respective index (threadgroup 1 sums up results for cluster 1 etc.).
     for(uint position = (tid * clusterCount_k) + clusterIndex, offset = clusterCount_k * tgLength; position < totalBufferlength; position += offset) {
         partialSum += buffer[position];
@@ -209,6 +188,6 @@ kernel void kMeansSumUp(device float * Means [[buffer(0)]],  // Row-major linear
     
     // calculate and save new center
     if(tid == 0) {
-        Means[clusterIndex] = tgBuffer[0].SumOfValues / tgBuffer[0].numberOfElements;
+        Means[clusterIndex] = tgBuffer[0] ;// numberOfElements[clusterIndex]; // TODO: get number of elements of a cluster with an MPSHistogram shader which will be applied to the label texture
     }
 }

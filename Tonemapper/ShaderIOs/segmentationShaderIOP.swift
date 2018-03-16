@@ -10,19 +10,24 @@ import Metal
 import MetalKitPlus
 
 final class toGrayShaderIO: MTKPIOProvider {
-    
-    let inTexture : MTLTexture
+    private let inTexture : MTLTexture
+    let grayTexture : MTLTexture
     
     init(image: MTLTexture){
         self.inTexture = image
+        
+        let descriptor = image.getDescriptor()
+        descriptor.pixelFormat = .r16Float
+        
+        guard let grayTexture = MTKPDevice.instance.makeTexture(descriptor: descriptor) else {
+            fatalError()
+        }
+        
+        self.grayTexture = grayTexture
     }
     
     func fetchTextures() -> [MTLTexture?]? {
-        let descriptor = self.inTexture.getDescriptor()
-        descriptor.pixelFormat = .r16Float
-        let greyTexture = MTKPDevice.instance.makeTexture(descriptor: descriptor)
-        
-        return [self.inTexture, greyTexture]
+        return [self.inTexture, grayTexture]
     }
     
     func fetchBuffers() -> [MTLBuffer]? {
@@ -32,12 +37,12 @@ final class toGrayShaderIO: MTKPIOProvider {
 
 final class bilateralFilterShaderIO: MTKPIOProvider {
     
-    let inTexture, outTexture : MTLTexture
-    let Kernel, KernelSize, Sigma_r : MTLBuffer
+    let outTexture : MTLTexture
+    private let inTexture : MTLTexture
+    private let Kernel, KernelSize, Sigma_r : MTLBuffer
     
-    init(image: MTLTexture, outTexture: MTLTexture, sigma_spatial: Float, sigma_range: Float){
+    init(image: MTLTexture, sigma_spatial: Float, sigma_range: Float){
         self.inTexture = image
-        self.outTexture = outTexture
         
         var sigma_buffer = sigma_range
         
@@ -53,17 +58,22 @@ final class bilateralFilterShaderIO: MTKPIOProvider {
         // outer product gives Kernel (cannot use separability with bilateral filter?)
         var KernelCoefficients = gaussCoefficients.flatMap{ Coeff in gaussCoefficients.map{Coeff * $0} }
         
+        let descriptor = image.getDescriptor()
+        descriptor.pixelFormat = .r16Float
+        
         guard
             let Kernel_ = MTKPDevice.instance.makeBuffer(bytes: &KernelCoefficients, length: MemoryLayout<Float>.size * KernelCoefficients.count, options: .storageModeManaged),
             let KernelSize_ = MTKPDevice.instance.makeBuffer(bytes: &KernelSize_s, length: MemoryLayout<uint>.size, options: .storageModeManaged),
-            let sigma_r_ = MTKPDevice.instance.makeBuffer(bytes: &sigma_buffer, length: MemoryLayout<Float>.size, options: .storageModeManaged)
-            else {
-                fatalError()
+            let sigma_r_ = MTKPDevice.instance.makeBuffer(bytes: &sigma_buffer, length: MemoryLayout<Float>.size, options: .storageModeManaged),
+            let outTexture = MTKPDevice.instance.makeTexture(descriptor: descriptor)
+        else {
+            fatalError()
         }
         
         self.Kernel = Kernel_
         self.KernelSize = KernelSize_
         self.Sigma_r = sigma_r_
+        self.outTexture = outTexture
     }
     
     func fetchTextures() -> [MTLTexture?]? {
@@ -94,7 +104,7 @@ final class kMeansShaderIO: MTKPIOProvider {
             let Means_ = MTKPDevice.instance.makeBuffer(bytes: &Means, length: K * MemoryLayout<Float>.size, options: .cpuCacheModeWriteCombined),
             let K_ = MTKPDevice.instance.makeBuffer(bytes: &K, length: MemoryLayout<Float>.size, options: .cpuCacheModeWriteCombined),
             // buffer to store structs "clusterSum" (see .metal file). clusterSum consists of a uint and a half. Due to memory alignment, the half value takes 4 bytes, so here, we allocate 8 bytes (uint + float) for every clusterSum element
-            let Buffer_ = MTKPDevice.instance.makeBuffer(length: (MemoryLayout<uint>.size + MemoryLayout<Float>.size) * Int(bufferLen), options: .storageModePrivate),
+            let Buffer_ = MTKPDevice.instance.makeBuffer(length: (MemoryLayout<Float>.size) * Int(bufferLen), options: .storageModeShared), // TODO: make it private
             let BufferLen_ = MTKPDevice.instance.makeBuffer(bytes: &bufferLen, length: MemoryLayout<uint>.size, options: .cpuCacheModeWriteCombined),
             let LabelTexture = MTKPDevice.instance.makeTexture(descriptor: LabelTexture_descriptor)
         else {
