@@ -27,20 +27,17 @@ class TonemapperTests: XCTestCase {
             TestTexture = try textureLoader.newTexture(URL: pictureURL, options: nil)
         } catch let Error { fatalError(Error.localizedDescription) }
         
-        let descriptor = TestTexture.getDescriptor()
-        descriptor.pixelFormat = .r16Float
-        guard let bilateralOutputTexture = MTKPDevice.instance.makeTexture(descriptor: descriptor) else {
-            fatalError()
-        }
-        let kMeansTGLength = [(MemoryLayout<uint>.size + MemoryLayout<uint>.size + MemoryLayout<Float>.size) * 256] // ushort + uint + half becomes uint + uint + float due to memory alignment
-        let kMeansSummationTGLength = [(MemoryLayout<uint>.size + MemoryLayout<Float>.size) * 256]
-        let clusterTestIO = kMeansShader_TestIO(grayInputTexture: bilateralOutputTexture)
-        let kMeansIO = kMeansShaderIO(grayInputTexture: bilateralOutputTexture)
+        let grayIOProvider = toGrayShaderIO(image: TestTexture)
+        let bilateralFilterIO = bilateralFilterShaderIO(image: grayIOProvider.grayTexture, sigma_spatial: 1.5, sigma_range: 0.1)
+        
+        let kMeansTGLength = [8 * 256] // ushort + uint + half becomes uint + uint + float due to memory alignment
+        let kMeansSummationTGLength = [MemoryLayout<Float>.size * 256]
+        let clusterTestIO = kMeansShader_TestIO(grayInputTexture: bilateralFilterIO.outTexture)
+        let kMeansIO = kMeansShaderIO(grayInputTexture: bilateralFilterIO.outTexture)
 
         var assets = MTKPAssets(SegmentationProcessor.self)
-        assets.add(shader: MTKPShader(name: "toGray", io: toGrayShaderIO(image: TestTexture)))
-        assets.add(shader: MTKPShader(name: "bilateralFilter", io: bilateralFilterShaderIO(image: assets["toGray"]!.textures![1]!, outTexture:
-            bilateralOutputTexture, sigma_spatial: 1.5, sigma_range: 0.1)))
+        assets.add(shader: MTKPShader(name: "toGray", io: grayIOProvider))
+        assets.add(shader: MTKPShader(name: "bilateralFilter", io: bilateralFilterIO))
         assets.add(shader: MTKPShader(name: "cluster", io: clusterTestIO))
         assets.add(shader: MTKPShader(name: "label", io: kMeansIO))
         assets.add(shader: MTKPShader(name: "kMeans", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (16, 16, 1), tgMemLength: kMeansTGLength)))
@@ -84,6 +81,7 @@ class TonemapperTests: XCTestCase {
         guard let filteredTexture = computer.assets["cluster"]?.textures?[1] else {
             fatalError()
         }
+        
         computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
         computer.encode("toGray")
         computer.encode("bilateralFilter")
@@ -97,12 +95,18 @@ class TonemapperTests: XCTestCase {
     }
     
     func testkMeans() {
-        guard let Means_gpu = computer.assets["kMeans"]?.buffers?[0] else {
+        guard
+            let Means_gpu = computer.assets["kMeans"]?.buffers?[0],
+            let Buffer = computer.assets["kMeans"]?.buffers?[2]
+        else {
             fatalError()
         }
         var Means = [Float](repeating: 0, count: 3)
+        var BufferHost = [Float](repeating: 0, count: 20)
         
         computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
+        computer.encode("toGray")
+        computer.encode("bilateralFilter")  // <- gray/bilateral filtering have to be performed beause it generates the input data for the kMeans shaders
         computer.encode("label")
         computer.encode("kMeans")
         computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1))
@@ -110,6 +114,7 @@ class TonemapperTests: XCTestCase {
         computer.commandBuffer.waitUntilCompleted()
         
         memcpy(&Means, Means_gpu.contents(), Means_gpu.length)
+        memcpy(&BufferHost, Buffer.contents(), BufferHost.count * 4)
         
         XCTAssert(Means.reduce(true){$0 && $1.isNormal}, "Means are: \(Means). Algorithm has failed.")
     }

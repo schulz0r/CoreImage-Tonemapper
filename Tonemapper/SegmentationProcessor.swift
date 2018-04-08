@@ -6,6 +6,7 @@
 //  Copyright © 2018 Philipp Waxweiler. All rights reserved.
 //
 
+import MetalPerformanceShaders
 import MetalKitPlus
 
 final class SegmentationProcessor: MTKPComputer {
@@ -77,5 +78,23 @@ final class SegmentationProcessor: MTKPComputer {
         
         cmdBuffer.commit()
         cmdBuffer.waitUntilCompleted()
+    }
+    
+    public func encodeMPSHistogram(forImage: MTLTexture, MTLHistogramBuffer: MTLBuffer, minPixelValue: vector_float4 = vector_float4(0,0,0,0), maxPixelValue: vector_float4 = vector_float4(1,1,1,1)){
+        var histogramInfo = MPSImageHistogramInfo(
+            numberOfHistogramEntries: 256, histogramForAlpha: false,
+            minPixelValue: minPixelValue,
+            maxPixelValue: maxPixelValue)
+        let calculation = MPSImageHistogram(device: MTKPDevice.instance, histogramInfo: &histogramInfo)
+        calculation.zeroHistogram = false
+        
+        guard MTLHistogramBuffer.length == calculation.histogramSize(forSourceFormat: forImage.pixelFormat) else {
+            fatalError("Did not allocate enough memory for storing histogram Data in given buffer.")
+        }
+        
+        calculation.encode(to: commandBuffer,
+                           sourceTexture: forImage,
+                           histogram: MTLHistogramBuffer,
+                           histogramOffset: 0)
     }
 }
