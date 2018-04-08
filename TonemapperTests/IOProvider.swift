@@ -14,7 +14,8 @@ import MetalKitPlus
 final class kMeansShader_TestIO: MTKPIOProvider {
     
     let inTexture, Labels : MTLTexture
-    let Means, meanCount_k, buffer, bufferLen : MTLBuffer
+    let clusterSizes : MTLBuffer
+    private let Means, meanCount_k, buffer, bufferLen : MTLBuffer
     
     init(grayInputTexture: MTLTexture){
         self.inTexture = grayInputTexture
@@ -28,6 +29,7 @@ final class kMeansShader_TestIO: MTKPIOProvider {
         
         guard
             let Means_ = MTKPDevice.instance.makeBuffer(bytes: &Means, length: K * MemoryLayout<Float>.size, options: .cpuCacheModeWriteCombined),
+            let clusterSizes_ = MTKPDevice.instance.makeBuffer(length: K * MemoryLayout<uint>.size, options: .storageModePrivate),
             let K_ = MTKPDevice.instance.makeBuffer(bytes: &K, length: MemoryLayout<Float>.size, options: .cpuCacheModeWriteCombined),
             // buffer to store structs "clusterSum" (see .metal file). clusterSum consists of a uint and a half. Due to memory alignment, the half value takes 4 bytes, so here, we allocate 8 bytes (uint + float) for every clusterSum element
             let Buffer_ = MTKPDevice.instance.makeBuffer(length: MemoryLayout<Float>.size * Int(bufferLen), options: .storageModeShared),
@@ -42,6 +44,7 @@ final class kMeansShader_TestIO: MTKPIOProvider {
         self.buffer = Buffer_
         self.bufferLen = BufferLen_
         self.Labels = LabelTexture
+        self.clusterSizes = clusterSizes_
     }
     
     func fetchTextures() -> [MTLTexture?]? {
@@ -49,6 +52,6 @@ final class kMeansShader_TestIO: MTKPIOProvider {
     }
     
     func fetchBuffers() -> [MTLBuffer]? {
-        return [Means, meanCount_k, buffer, bufferLen]
+        return [Means, meanCount_k, buffer, bufferLen, clusterSizes]
     }
 }

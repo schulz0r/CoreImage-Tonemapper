@@ -164,6 +164,7 @@ kernel void kMeansSumUp(device float * Means [[buffer(0)]],  // Row-major linear
                         constant uint & clusterCount_k [[buffer(1)]],
                         constant float * buffer [[buffer(2)]],
                         constant uint & totalBufferlength [[buffer(3)]],
+                        constant uint * numberOfElements [[buffer(4)]],
                         threadgroup float * tgBuffer [[threadgroup(0)]],
                         uint clusterIndex [[threadgroup_position_in_grid]],
                         uint tid [[thread_index_in_threadgroup]],
@@ -188,6 +189,6 @@ kernel void kMeansSumUp(device float * Means [[buffer(0)]],  // Row-major linear
     
     // calculate and save new center
     if(tid == 0) {
-        Means[clusterIndex] = tgBuffer[0] ;// numberOfElements[clusterIndex]; // TODO: get number of elements of a cluster with an MPSHistogram shader which will be applied to the label texture
+        Means[clusterIndex] = tgBuffer[0] / numberOfElements[clusterIndex]; // TODO: get number of elements of a cluster with an MPSHistogram shader which will be applied to the label texture
     }
 }

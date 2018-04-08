@@ -80,11 +80,12 @@ final class SegmentationProcessor: MTKPComputer {
         cmdBuffer.waitUntilCompleted()
     }
     
-    public func encodeMPSHistogram(forImage: MTLTexture, MTLHistogramBuffer: MTLBuffer, minPixelValue: vector_float4 = vector_float4(0,0,0,0), maxPixelValue: vector_float4 = vector_float4(1,1,1,1)){
+    public func encodeMPSHistogram(forImage: MTLTexture, MTLHistogramBuffer: MTLBuffer, numberOfClusters: Int){
+        let K = Float(numberOfClusters)
         var histogramInfo = MPSImageHistogramInfo(
             numberOfHistogramEntries: 256, histogramForAlpha: false,
-            minPixelValue: minPixelValue,
-            maxPixelValue: maxPixelValue)
+            minPixelValue: vector_float4(0,0,0,0),
+            maxPixelValue: vector_float4(K,K,K,K))
         let calculation = MPSImageHistogram(device: MTKPDevice.instance, histogramInfo: &histogramInfo)
         calculation.zeroHistogram = false
         

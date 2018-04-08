@@ -97,24 +97,24 @@ class TonemapperTests: XCTestCase {
     func testkMeans() {
         guard
             let Means_gpu = computer.assets["kMeans"]?.buffers?[0],
-            let Buffer = computer.assets["kMeans"]?.buffers?[2]
+            let labels = computer.assets["label"]?.textures?[1],
+            let labelBins = computer.assets["kMeansSumUp"]?.buffers?[4]
         else {
             fatalError()
         }
         var Means = [Float](repeating: 0, count: 3)
-        var BufferHost = [Float](repeating: 0, count: 20)
         
         computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
         computer.encode("toGray")
         computer.encode("bilateralFilter")  // <- gray/bilateral filtering have to be performed beause it generates the input data for the kMeans shaders
         computer.encode("label")
+        computer.encodeMPSHistogram(forImage: labels, MTLHistogramBuffer: labelBins, numberOfClusters: 3)
         computer.encode("kMeans")
         computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1))
         computer.commandBuffer.commit()
         computer.commandBuffer.waitUntilCompleted()
         
         memcpy(&Means, Means_gpu.contents(), Means_gpu.length)
-        memcpy(&BufferHost, Buffer.contents(), BufferHost.count * 4)
         
         XCTAssert(Means.reduce(true){$0 && $1.isNormal}, "Means are: \(Means). Algorithm has failed.")
     }
