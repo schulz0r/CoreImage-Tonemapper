@@ -32,13 +32,11 @@ class TonemapperTests: XCTestCase {
         
         let kMeansTGLength = [8 * 256] // ushort + uint + half becomes uint + uint + float due to memory alignment
         let kMeansSummationTGLength = [MemoryLayout<Float>.size * 256]
-        let clusterTestIO = kMeansShader_TestIO(grayInputTexture: bilateralFilterIO.outTexture)
         let kMeansIO = kMeansShaderIO(grayInputTexture: bilateralFilterIO.outTexture)
 
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: grayIOProvider))
         assets.add(shader: MTKPShader(name: "bilateralFilter", io: bilateralFilterIO))
-        assets.add(shader: MTKPShader(name: "cluster", io: clusterTestIO))
         assets.add(shader: MTKPShader(name: "label", io: kMeansIO))
         assets.add(shader: MTKPShader(name: "kMeans", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (16, 16, 1), tgMemLength: kMeansTGLength)))
         assets.add(shader: MTKPShader(name: "kMeansSumUp", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (256, 1, 1), tgMemLength: kMeansSummationTGLength)))
@@ -77,28 +75,10 @@ class TonemapperTests: XCTestCase {
         Image.write(url: desktopURL.appendingPathComponent("BilateralFilterShader.png"))
     }
     
-    func testClustering() {
-        guard let filteredTexture = computer.assets["cluster"]?.textures?[1] else {
-            fatalError()
-        }
-        
-        computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
-        computer.encode("toGray")
-        computer.encode("bilateralFilter")
-        computer.encode("cluster")
-        computer.commandBuffer.commit()
-        computer.commandBuffer.waitUntilCompleted()
-        
-        let Image = CIImage(mtlTexture: filteredTexture, options: nil)!
-        
-        Image.write(url: desktopURL.appendingPathComponent("ClusteringShader.png"))
-    }
-    
     func testkMeans() {
         guard
             let Means_gpu = computer.assets["kMeans"]?.buffers?[0],
-            let labels = computer.assets["label"]?.textures?[1],
-            let labelBins = computer.assets["kMeansSumUp"]?.buffers?[4]
+            let labels = computer.assets["label"]?.textures?[1]
         else {
             fatalError()
         }

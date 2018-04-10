@@ -18,7 +18,6 @@
 		1741C4C620478E1A00F60511 /* SortAndCount.h in Headers */ = {isa = PBXBuildFile; fileRef = 1741C4C520478E1A00F60511 /* SortAndCount.h */; };
 		178F5322207A359200F2DD21 /* MetalKitPlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 178F5321207A359200F2DD21 /* MetalKitPlus.framework */; };
 		17CA27AB20595A1800259299 /* segmentationShaderIOP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CA27AA20595A1800259299 /* segmentationShaderIOP.swift */; };
-		17CA27AD2059621A00259299 /* IOProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CA27AC2059621A00259299 /* IOProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +45,6 @@
 		1741C4C520478E1A00F60511 /* SortAndCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortAndCount.h; sourceTree = "<group>"; };
 		178F5321207A359200F2DD21 /* MetalKitPlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MetalKitPlus.framework; sourceTree = "<group>"; };
 		17CA27AA20595A1800259299 /* segmentationShaderIOP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = segmentationShaderIOP.swift; sourceTree = "<group>"; };
-		17CA27AC2059621A00259299 /* IOProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +103,6 @@
 		1741B67D202A7DAD00792F36 /* TonemapperTests */ = {
 			isa = PBXGroup;
 			children = (
-				17CA27AC2059621A00259299 /* IOProvider.swift */,
 				1741B67E202A7DAD00792F36 /* ShaderTests.swift */,
 				1741B680202A7DAD00792F36 /* Info.plist */,
 				1741C4BF204455C900F60511 /* extensions.swift */,
@@ -271,7 +268,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1741B67F202A7DAD00792F36 /* ShaderTests.swift in Sources */,
-				17CA27AD2059621A00259299 /* IOProvider.swift in Sources */,
 				1741C4C0204455C900F60511 /* extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
