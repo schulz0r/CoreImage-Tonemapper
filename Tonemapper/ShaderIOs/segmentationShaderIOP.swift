@@ -95,7 +95,7 @@ final class kMeansShaderIO: MTKPIOProvider {
         self.inTexture = grayInputTexture
         
         let LabelTexture_descriptor = grayInputTexture.getDescriptor()
-        LabelTexture_descriptor.pixelFormat = .r8Uint
+        LabelTexture_descriptor.pixelFormat = .r16Float
         
         var Means = Array<Float>(stride(from: 0, to: 1, by: 0.5)) + [1] // evenly distribute means over values
         var K = uint(Means.count)

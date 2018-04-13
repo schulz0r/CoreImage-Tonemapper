@@ -83,7 +83,7 @@ kernel void bilateralFilter(texture2d<half, access::read> inTexture [[texture(0)
 
 // Assign each pixel to the cluster with the smalest distance to the center
 kernel void label(texture2d<half, access::read> grayTexture [[texture(0)]],
-                    texture2d<ushort, access::write> labels [[texture(1)]],
+                    texture2d<half, access::write> labels [[texture(1)]],
                     constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
                     constant uint & clusterCount_k [[buffer(1)]],
                     uint2 gid [[thread_position_in_grid]]) {
@@ -102,7 +102,7 @@ kernel void label(texture2d<half, access::read> grayTexture [[texture(0)]],
         }
     }
     
-    labels.write(label, gid);
+    labels.write(half(label), gid);
 }
 
 kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],

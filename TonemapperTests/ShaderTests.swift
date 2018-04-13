@@ -12,15 +12,15 @@ import MetalKitPlus
 @testable import Tonemapper
 
 class TonemapperTests: XCTestCase {
-    
-    var TestTexture:MTLTexture! = nil
     var computer:SegmentationProcessor! = nil
     let desktopURL = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop/")
+    var kMeansIO : kMeansShaderIO! = nil
     
     override func setUp() {
         super.setUp()
         let textureLoader = MTKTextureLoader(device: MTKPDevice.instance)
         let pictureURL = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Documents/Codes/Testpics/myTestpic.jpg")
+        var TestTexture:MTLTexture! = nil
         
         // load a texture
         do{
@@ -32,7 +32,7 @@ class TonemapperTests: XCTestCase {
         
         let kMeansTGLength = [8 * 256] // ushort + uint + half becomes uint + uint + float due to memory alignment
         let kMeansSummationTGLength = [MemoryLayout<Float>.size * 256]
-        let kMeansIO = kMeansShaderIO(grayInputTexture: bilateralFilterIO.outTexture)
+        self.kMeansIO = kMeansShaderIO(grayInputTexture: bilateralFilterIO.outTexture)
 
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: grayIOProvider))
@@ -75,18 +75,40 @@ class TonemapperTests: XCTestCase {
         Image.write(url: desktopURL.appendingPathComponent("BilateralFilterShader.png"))
     }
     
+    func testDataLabeling() {
+        guard
+            let labelBins = MTKPDevice.instance.makeBuffer(length: MemoryLayout<uint>.size * 256, options: .storageModeShared)
+            else {
+                fatalError()
+        }
+        
+        computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
+        computer.encode("toGray")
+        computer.encode("bilateralFilter")
+        computer.encode("label")
+        computer.encodeMPSHistogram(forImage: kMeansIO.Labels, MTLHistogramBuffer: labelBins, numberOfClusters: 3)
+        computer.commandBuffer.commit()
+        computer.commandBuffer.waitUntilCompleted()
+        
+        let ClusterSizes = Array(UnsafeBufferPointer(start: labelBins.contents().bindMemory(to: uint.self, capacity: 3), count: 3))
+        
+        XCTAssert(ClusterSizes[0] != (kMeansIO.Labels.width * kMeansIO.Labels.height), "Labels are all zero. If your test image was not very dark, labeling has failed.")
+    }
+    
     func testkMeans() {
         guard
             let Means_gpu = computer.assets["kMeans"]?.buffers?[0],
-            let labels = computer.assets["label"]?.textures?[1]
+            let labels = computer.assets["label"]?.textures?[1],
+            let labelBins = computer.assets["kMeansSumUp"]?.buffers?[4]
         else {
             fatalError()
         }
+        
         var Means = [Float](repeating: 0, count: 3)
         
         computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
         computer.encode("toGray")
-        computer.encode("bilateralFilter")  // <- gray/bilateral filtering have to be performed beause it generates the input data for the kMeans shaders
+        computer.encode("bilateralFilter")
         computer.encode("label")
         computer.encodeMPSHistogram(forImage: labels, MTLHistogramBuffer: labelBins, numberOfClusters: 3)
         computer.encode("kMeans")
