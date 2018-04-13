@@ -105,30 +105,6 @@ kernel void label(texture2d<half, access::read> grayTexture [[texture(0)]],
     labels.write(label, gid);
 }
 
-// cluster the image pixels. it is similar to labeling, but the center means are written to the output image instead the index of the corresponding cluster. this function is used in the testing module.
-kernel void cluster(texture2d<half, access::read> grayTexture [[texture(0)]],
-                    texture2d<half, access::write> clusteredImage [[texture(1)]],
-                    constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
-                    constant uint & clusterCount_k [[buffer(1)]],
-                    uint2 gid [[thread_position_in_grid]]) {
-    
-    uchar label = 0;
-    half closestDistance = 1.0;
-    
-    const half dataPoint = grayTexture.read(gid).x;
-    
-    for(uchar i = 0; i < clusterCount_k; i++) {
-        const half dist = abs(dataPoint - Means[i]);
-        
-        if (dist < closestDistance) {
-            closestDistance = dist;
-            label = i;
-        }
-    }
-    
-    clusteredImage.write(Means[label], gid);
-}
-
 kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
                    texture2d<ushort, access::read> labels [[texture(1)]],
                    constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
