@@ -87,7 +87,7 @@ final class SegmentationProcessor: MTKPComputer {
             minPixelValue: vector_float4(0,0,0,0),
             maxPixelValue: vector_float4(K,K,K,K))
         let calculation = MPSImageHistogram(device: MTKPDevice.instance, histogramInfo: &histogramInfo)
-        calculation.zeroHistogram = false
+        calculation.zeroHistogram = true
         
         guard MTLHistogramBuffer.length == calculation.histogramSize(forSourceFormat: forImage.pixelFormat) else {
             fatalError("Did not allocate enough memory for storing histogram Data in given buffer.")
