@@ -106,7 +106,7 @@ kernel void label(texture2d<half, access::read> grayTexture [[texture(0)]],
 }
 
 kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
-                   texture2d<ushort, access::read> labels [[texture(1)]],
+                   texture2d<half, access::read> labels [[texture(1)]],
                    constant float * Means [[buffer(0)]],  // Row-major linearly indexed coefficients
                    constant uint & clusterCount_k [[buffer(1)]],
                    device float * buffer [[buffer(2)]],
@@ -119,7 +119,7 @@ kernel void kMeans(texture2d<half, access::read> grayTexture [[texture(0)]],
     
     // read pixel
     const half dataPoint = grayTexture.read(gid).x;
-    const uchar label = labels.read(gid).x;
+    const uchar label = uchar(labels.read(gid).x);
     
     sortBuffer[tid] = {label, dataPoint};  // write pixel to threadgroup memory, label indicates to which cluster element belongs
     threadgroup_barrier(mem_flags::mem_threadgroup);
