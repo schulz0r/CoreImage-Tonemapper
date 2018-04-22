@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		171B0E0A208280D90068C3E5 /* tonemappingShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 171B0E09208280D90068C3E5 /* tonemappingShader.metal */; };
-		171B0E0C2082BA420068C3E5 /* tonemappingIOProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171B0E0B2082BA420068C3E5 /* tonemappingIOProvider.swift */; };
 		1741B67A202A7DAD00792F36 /* Tonemapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1741B670202A7DAD00792F36 /* Tonemapper.framework */; };
 		1741B67F202A7DAD00792F36 /* ShaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741B67E202A7DAD00792F36 /* ShaderTests.swift */; };
 		1741B681202A7DAD00792F36 /* Tonemapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1741B673202A7DAD00792F36 /* Tonemapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -19,7 +18,7 @@
 		1741C4C22044598900F60511 /* SegmentationProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4C12044598900F60511 /* SegmentationProcessor.swift */; };
 		1741C4C620478E1A00F60511 /* SortAndCount.h in Headers */ = {isa = PBXBuildFile; fileRef = 1741C4C520478E1A00F60511 /* SortAndCount.h */; };
 		178F5322207A359200F2DD21 /* MetalKitPlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 178F5321207A359200F2DD21 /* MetalKitPlus.framework */; };
-		17CA27AB20595A1800259299 /* segmentationShaderIOP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CA27AA20595A1800259299 /* segmentationShaderIOP.swift */; };
+		17CA27AB20595A1800259299 /* tonemappingShaderIOP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CA27AA20595A1800259299 /* tonemappingShaderIOP.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,7 +33,6 @@
 
 /* Begin PBXFileReference section */
 		171B0E09208280D90068C3E5 /* tonemappingShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = tonemappingShader.metal; sourceTree = "<group>"; };
-		171B0E0B2082BA420068C3E5 /* tonemappingIOProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tonemappingIOProvider.swift; sourceTree = "<group>"; };
 		1741B670202A7DAD00792F36 /* Tonemapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Tonemapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1741B673202A7DAD00792F36 /* Tonemapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tonemapper.h; sourceTree = "<group>"; };
 		1741B674202A7DAD00792F36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -48,7 +46,7 @@
 		1741C4C12044598900F60511 /* SegmentationProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentationProcessor.swift; sourceTree = "<group>"; };
 		1741C4C520478E1A00F60511 /* SortAndCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortAndCount.h; sourceTree = "<group>"; };
 		178F5321207A359200F2DD21 /* MetalKitPlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MetalKitPlus.framework; sourceTree = "<group>"; };
-		17CA27AA20595A1800259299 /* segmentationShaderIOP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = segmentationShaderIOP.swift; sourceTree = "<group>"; };
+		17CA27AA20595A1800259299 /* tonemappingShaderIOP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tonemappingShaderIOP.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,8 +134,7 @@
 		1741C4B62042FB3E00F60511 /* ShaderIOs */ = {
 			isa = PBXGroup;
 			children = (
-				17CA27AA20595A1800259299 /* segmentationShaderIOP.swift */,
-				171B0E0B2082BA420068C3E5 /* tonemappingIOProvider.swift */,
+				17CA27AA20595A1800259299 /* tonemappingShaderIOP.swift */,
 			);
 			path = ShaderIOs;
 			sourceTree = "<group>";
@@ -263,10 +260,9 @@
 			files = (
 				1741C4C22044598900F60511 /* SegmentationProcessor.swift in Sources */,
 				1741C4B42041DE7D00F60511 /* SegmentationShader.metal in Sources */,
-				17CA27AB20595A1800259299 /* segmentationShaderIOP.swift in Sources */,
+				17CA27AB20595A1800259299 /* tonemappingShaderIOP.swift in Sources */,
 				1741C4B22041D45300F60511 /* CITonemapper.swift in Sources */,
 				1741C4BC2042FF7500F60511 /* extensions.swift in Sources */,
-				171B0E0C2082BA420068C3E5 /* tonemappingIOProvider.swift in Sources */,
 				171B0E0A208280D90068C3E5 /* tonemappingShader.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -121,7 +121,7 @@ final class kMeansShaderIO: MTKPIOProvider {
     }
     
     func fetchTextures() -> [MTLTexture?]? {
-        return [self.inTexture, self.Labels]
+        return [self.inTexture, self.Labels, self.inTexture]
     }
     
     func fetchBuffers() -> [MTLBuffer]? {

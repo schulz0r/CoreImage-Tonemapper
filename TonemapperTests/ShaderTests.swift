@@ -120,4 +120,8 @@ class TonemapperTests: XCTestCase {
         
         XCTAssert(Means.reduce(true){$0 && $1.isNormal}, "Means are: \(Means). Algorithm has failed.")
     }
+    
+    func testAlgorithm() {
+        
+    }
 }
