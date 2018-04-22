@@ -18,7 +18,8 @@
 		1741C4C22044598900F60511 /* SegmentationProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4C12044598900F60511 /* SegmentationProcessor.swift */; };
 		1741C4C620478E1A00F60511 /* SortAndCount.h in Headers */ = {isa = PBXBuildFile; fileRef = 1741C4C520478E1A00F60511 /* SortAndCount.h */; };
 		178F5322207A359200F2DD21 /* MetalKitPlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 178F5321207A359200F2DD21 /* MetalKitPlus.framework */; };
-		17CA27AB20595A1800259299 /* tonemappingShaderIOP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CA27AA20595A1800259299 /* tonemappingShaderIOP.swift */; };
+		17B54BFE208CF77A002C5EDF /* tonemapIOProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B54BFD208CF77A002C5EDF /* tonemapIOProvider.swift */; };
+		17CA27AB20595A1800259299 /* segmentationIOP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CA27AA20595A1800259299 /* segmentationIOP.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +47,8 @@
 		1741C4C12044598900F60511 /* SegmentationProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentationProcessor.swift; sourceTree = "<group>"; };
 		1741C4C520478E1A00F60511 /* SortAndCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortAndCount.h; sourceTree = "<group>"; };
 		178F5321207A359200F2DD21 /* MetalKitPlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MetalKitPlus.framework; sourceTree = "<group>"; };
-		17CA27AA20595A1800259299 /* tonemappingShaderIOP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tonemappingShaderIOP.swift; sourceTree = "<group>"; };
+		17B54BFD208CF77A002C5EDF /* tonemapIOProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tonemapIOProvider.swift; sourceTree = "<group>"; };
+		17CA27AA20595A1800259299 /* segmentationIOP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = segmentationIOP.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,7 +136,8 @@
 		1741C4B62042FB3E00F60511 /* ShaderIOs */ = {
 			isa = PBXGroup;
 			children = (
-				17CA27AA20595A1800259299 /* tonemappingShaderIOP.swift */,
+				17CA27AA20595A1800259299 /* segmentationIOP.swift */,
+				17B54BFD208CF77A002C5EDF /* tonemapIOProvider.swift */,
 			);
 			path = ShaderIOs;
 			sourceTree = "<group>";
@@ -204,7 +207,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Philipp Waxweiler";
 				TargetAttributes = {
 					1741B66F202A7DAD00792F36 = {
@@ -260,7 +263,8 @@
 			files = (
 				1741C4C22044598900F60511 /* SegmentationProcessor.swift in Sources */,
 				1741C4B42041DE7D00F60511 /* SegmentationShader.metal in Sources */,
-				17CA27AB20595A1800259299 /* tonemappingShaderIOP.swift in Sources */,
+				17CA27AB20595A1800259299 /* segmentationIOP.swift in Sources */,
+				17B54BFE208CF77A002C5EDF /* tonemapIOProvider.swift in Sources */,
 				1741C4B22041D45300F60511 /* CITonemapper.swift in Sources */,
 				1741C4BC2042FF7500F60511 /* extensions.swift in Sources */,
 				171B0E0A208280D90068C3E5 /* tonemappingShader.metal in Sources */,
@@ -301,6 +305,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -308,6 +313,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -361,6 +367,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -368,6 +375,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

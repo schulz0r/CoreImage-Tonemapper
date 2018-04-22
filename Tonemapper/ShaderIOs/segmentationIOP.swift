@@ -85,7 +85,7 @@ final class bilateralFilterShaderIO: MTKPIOProvider {
     }
 }
 
-final class kMeansShaderIO: MTKPIOProvider {
+final class segmentationIOProvider: MTKPIOProvider {
     
     let inTexture, Labels : MTLTexture
     let clusterSizes : MTLBuffer
@@ -121,7 +121,7 @@ final class kMeansShaderIO: MTKPIOProvider {
     }
     
     func fetchTextures() -> [MTLTexture?]? {
-        return [self.inTexture, self.Labels, self.inTexture]
+        return [self.inTexture, self.Labels]
     }
     
     func fetchBuffers() -> [MTLBuffer]? {
