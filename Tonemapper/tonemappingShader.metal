@@ -38,5 +38,5 @@ kernel void tonemap(texture2d<half, access::read> image [[texture(0)]],
     const half2 lambda(label == 0 ? 0 : (Means[label] + Means[label - 1]) / 2, label == clusterCount_k ? 1.0 : (Means[label] + Means[label + 1]) / 2);
     const half lightnessPerception = NakaRushton(lightness, Means[label], lambda);
     
-    result.write(half4(pixel.r / (pixel.r + lightnessPerception), pixel.g / (pixel.g + lightnessPerception), pixel.b / (pixel.b + lightnessPerception), 1), gid);
+    result.write(half4(pixel / (pixel + lightnessPerception), 1), gid);
 }
