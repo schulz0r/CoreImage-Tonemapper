@@ -14,7 +14,7 @@ import MetalKitPlus
 class TonemapperTests: XCTestCase {
     var computer:SegmentationProcessor! = nil
     let desktopURL = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop/")
-    var kMeansIO : tonemappingIOProvider! = nil
+    var kMeansIO : segmentationIOProvider! = nil
     
     override func setUp() {
         super.setUp()
@@ -32,7 +32,7 @@ class TonemapperTests: XCTestCase {
         
         let kMeansTGLength = [8 * 256] // ushort + uint + half becomes uint + uint + float due to memory alignment
         let kMeansSummationTGLength = [MemoryLayout<Float>.size * 256]
-        self.kMeansIO = tonemappingIOProvider(grayInputTexture: bilateralFilterIO.outTexture)
+        self.kMeansIO = segmentationIOProvider(grayInputTexture: bilateralFilterIO.outTexture)
 
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: grayIOProvider))
