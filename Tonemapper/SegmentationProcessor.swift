@@ -18,17 +18,18 @@ final class SegmentationProcessor: MTKPComputer {
         self.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
     }
     
-    public func encode(_ name:String, threads: MTLSize? = nil) {
+    public func encode(_ name:String, threads: MTLSize? = nil, encodeTo: MTLCommandBuffer? = nil) {
         guard
             let descriptor = self.assets[name] as? MTKPComputePipelineStateDescriptor,
             descriptor.state != nil,
-            let computeEncoder = commandBuffer.makeComputeCommandEncoder()
+            let computeEncoder = encodeTo?.makeComputeCommandEncoder() ?? commandBuffer.makeComputeCommandEncoder()
             else {
                 fatalError()
         }
         guard (threads != nil) || (descriptor.textures != nil) else {
             fatalError("The thread count is unknown. Pass it as an argument to the encode function.")
         }
+        
         let threadCount = threads ?? descriptor.textures![0]!.size()
         
         computeEncoder.setComputePipelineState(descriptor.state!)
