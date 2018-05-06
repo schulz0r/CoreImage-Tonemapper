@@ -14,12 +14,10 @@ class ThresholdImageProcessorKernel: CIImageProcessorKernel {
     static let device = MTLCreateSystemDefaultDevice()
     override class func process(with inputs: [CIImageProcessorInput]?, arguments: [String : Any]?, output: CIImageProcessorOutput) throws {
         guard
-            let device = device,
             let commandBuffer = output.metalCommandBuffer,
             let input = inputs?.first,
             let sourceTexture = input.metalTexture,
-            let destinationTexture = output.metalTexture,
-            let thresholdValue = arguments?["thresholdValue"] as? Float else  {
+            let destinationTexture = output.metalTexture else  {
                 return
         }
         
@@ -39,14 +37,14 @@ class ThresholdImageProcessorKernel: CIImageProcessorKernel {
         assets.add(shader: MTKPShader(name: "tonemap", io: tonemapperIO))
         let computer = SegmentationProcessor(assets: assets)
         
-        computer.encode("toGray")
-        computer.encode("bilateralFilter")
+        computer.encode("toGray", encodeTo: commandBuffer)
+        computer.encode("bilateralFilter", encodeTo: commandBuffer)
         (1...5).forEach{ _ in   // repeat kMeans n times
-            computer.encode("label")
-            computer.encodeMPSHistogram(forImage: IOProvider.Labels, MTLHistogramBuffer: labelBins, numberOfClusters: 3)
-            computer.encode("kMeans")
-            computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1))
+            computer.encode("label", encodeTo: commandBuffer)
+            computer.encodeMPSHistogram(forImage: IOProvider.Labels, MTLHistogramBuffer: IOProvider.ClusterMemberCount, numberOfClusters: 3)
+            computer.encode("kMeans", encodeTo: commandBuffer)
+            computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1), encodeTo: commandBuffer)
         }
-        computer.encode("tonemap")
+        computer.encode("tonemap", encodeTo: commandBuffer)
     }
 }
