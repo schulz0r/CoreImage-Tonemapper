@@ -17,7 +17,7 @@
 		1741C4C0204455C900F60511 /* extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4BF204455C900F60511 /* extensions.swift */; };
 		1741C4C22044598900F60511 /* SegmentationProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741C4C12044598900F60511 /* SegmentationProcessor.swift */; };
 		1741C4C620478E1A00F60511 /* SortAndCount.h in Headers */ = {isa = PBXBuildFile; fileRef = 1741C4C520478E1A00F60511 /* SortAndCount.h */; };
-		176126BF209E4ADF0038AB01 /* TonemappingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176126BE209E4ADF0038AB01 /* TonemappingTest.swift */; };
+		176126BF209E4ADF0038AB01 /* CIProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176126BE209E4ADF0038AB01 /* CIProcessorTests.swift */; };
 		178F5322207A359200F2DD21 /* MetalKitPlus.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 178F5321207A359200F2DD21 /* MetalKitPlus.framework */; };
 		17B54BFE208CF77A002C5EDF /* tonemapIOProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B54BFD208CF77A002C5EDF /* tonemapIOProvider.swift */; };
 		17CA27AB20595A1800259299 /* segmentationIOP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CA27AA20595A1800259299 /* segmentationIOP.swift */; };
@@ -47,7 +47,7 @@
 		1741C4BF204455C900F60511 /* extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extensions.swift; sourceTree = "<group>"; };
 		1741C4C12044598900F60511 /* SegmentationProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentationProcessor.swift; sourceTree = "<group>"; };
 		1741C4C520478E1A00F60511 /* SortAndCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortAndCount.h; sourceTree = "<group>"; };
-		176126BE209E4ADF0038AB01 /* TonemappingTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TonemappingTest.swift; sourceTree = "<group>"; };
+		176126BE209E4ADF0038AB01 /* CIProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIProcessorTests.swift; sourceTree = "<group>"; };
 		178F5321207A359200F2DD21 /* MetalKitPlus.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MetalKitPlus.framework; sourceTree = "<group>"; };
 		17B54BFD208CF77A002C5EDF /* tonemapIOProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = tonemapIOProvider.swift; sourceTree = "<group>"; };
 		17CA27AA20595A1800259299 /* segmentationIOP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = segmentationIOP.swift; sourceTree = "<group>"; };
@@ -110,7 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				1741B67E202A7DAD00792F36 /* ShaderTests.swift */,
-				176126BE209E4ADF0038AB01 /* TonemappingTest.swift */,
+				176126BE209E4ADF0038AB01 /* CIProcessorTests.swift */,
 				1741B680202A7DAD00792F36 /* Info.plist */,
 				1741C4BF204455C900F60511 /* extensions.swift */,
 			);
@@ -278,7 +278,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				176126BF209E4ADF0038AB01 /* TonemappingTest.swift in Sources */,
+				176126BF209E4ADF0038AB01 /* CIProcessorTests.swift in Sources */,
 				1741B67F202A7DAD00792F36 /* ShaderTests.swift in Sources */,
 				1741C4C0204455C900F60511 /* extensions.swift in Sources */,
 			);
