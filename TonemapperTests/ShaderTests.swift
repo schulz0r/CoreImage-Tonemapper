@@ -33,6 +33,7 @@ class TonemapperTests: XCTestCase {
         let kMeansTGLength = [8 * 256] // ushort + uint + half becomes uint + uint + float due to memory alignment
         let kMeansSummationTGLength = [MemoryLayout<Float>.size * 256]
         self.kMeansIO = segmentationIOProvider(grayInputTexture: bilateralFilterIO.outTexture)
+        let tonemapperIO = tonemappingIOProvider(inputLinearImage: TestTexture, output: TestTexture, segmentationIO: kMeansIO)
 
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: grayIOProvider))
@@ -40,12 +41,8 @@ class TonemapperTests: XCTestCase {
         assets.add(shader: MTKPShader(name: "label", io: kMeansIO))
         assets.add(shader: MTKPShader(name: "kMeans", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (16, 16, 1), tgMemLength: kMeansTGLength)))
         assets.add(shader: MTKPShader(name: "kMeansSumUp", io: kMeansIO, tgConfig: MTKPThreadgroupConfig(tgSize: (256, 1, 1), tgMemLength: kMeansSummationTGLength)))
+        assets.add(shader: MTKPShader(name: "tonemap", io: tonemapperIO))
         computer = SegmentationProcessor(assets: assets)
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
     }
     
     func testGrayShader() {
@@ -96,11 +93,7 @@ class TonemapperTests: XCTestCase {
     }
     
     func testkMeans() {
-        guard
-            let Means_gpu = computer.assets["kMeans"]?.buffers?[0],
-            let labels = computer.assets["label"]?.textures?[1],
-            let labelBins = computer.assets["kMeansSumUp"]?.buffers?[4]
-        else {
+        guard let Means_gpu = computer.assets["kMeans"]?.buffers?[0] else {
             fatalError()
         }
         
@@ -109,10 +102,12 @@ class TonemapperTests: XCTestCase {
         computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
         computer.encode("toGray")
         computer.encode("bilateralFilter")
-        computer.encode("label")
-        computer.encodeMPSHistogram(forImage: labels, MTLHistogramBuffer: labelBins, numberOfClusters: 3)
-        computer.encode("kMeans")
-        computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1))
+        (1...3).forEach{ _ in   // repeat kMeans n times
+            computer.encode("label")
+            computer.encodeMPSHistogram(forImage: kMeansIO.Labels, MTLHistogramBuffer: kMeansIO.ClusterMemberCount, numberOfClusters: 3)
+            computer.encode("kMeans")
+            computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1))
+        }
         computer.commandBuffer.commit()
         computer.commandBuffer.waitUntilCompleted()
         
@@ -121,7 +116,25 @@ class TonemapperTests: XCTestCase {
         XCTAssert(Means.reduce(true){$0 && $1.isNormal}, "Means are: \(Means). Algorithm has failed.")
     }
     
-    func testAlgorithm() {
+    func testkTone() {
+        guard let result = computer.assets["toGray"]?.textures?[0] else {
+            fatalError()
+        }
         
+        computer.commandBuffer = MTKPDevice.commandQueue.makeCommandBuffer()
+        computer.encode("toGray")
+        computer.encode("bilateralFilter")
+        (1...3).forEach{ _ in   // repeat kMeans n times
+            computer.encode("label")
+            computer.encodeMPSHistogram(forImage: kMeansIO.Labels, MTLHistogramBuffer: kMeansIO.ClusterMemberCount, numberOfClusters: 3)
+            computer.encode("kMeans")
+            computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1))
+        }
+        computer.encode("tonemap")
+        computer.commandBuffer.commit()
+        computer.commandBuffer.waitUntilCompleted()
+        
+        CIImage(mtlTexture: result, options: nil)!.write(url: desktopURL.appendingPathComponent("Tone.png"))
+        XCTAssert(true)
     }
 }

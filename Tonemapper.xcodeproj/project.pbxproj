@@ -78,6 +78,7 @@
 			children = (
 				178F5321207A359200F2DD21 /* MetalKitPlus.framework */,
 				1741B672202A7DAD00792F36 /* Tonemapper */,
+				1741C4B12041D45300F60511 /* CITonemapper.swift */,
 				1741B67D202A7DAD00792F36 /* TonemapperTests */,
 				1741B671202A7DAD00792F36 /* Products */,
 				1741C4C32044642D00F60511 /* Frameworks */,
@@ -98,10 +99,9 @@
 			children = (
 				1741C4B52042FB2E00F60511 /* Shader */,
 				1741C4B62042FB3E00F60511 /* ShaderIOs */,
-				1741C4B12041D45300F60511 /* CITonemapper.swift */,
+				1741C4C12044598900F60511 /* SegmentationProcessor.swift */,
 				1741C4BB2042FF7500F60511 /* extensions.swift */,
 				1741C4B02040DF3C00F60511 /* Misc */,
-				1741C4C12044598900F60511 /* SegmentationProcessor.swift */,
 			);
 			path = Tonemapper;
 			sourceTree = "<group>";

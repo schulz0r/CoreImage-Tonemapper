@@ -11,7 +11,7 @@ import CoreImage
 import MetalKitPlus
 
 class ThresholdImageProcessorKernel: CIImageProcessorKernel {
-    static let device = MTLCreateSystemDefaultDevice()
+    
     override class func process(with inputs: [CIImageProcessorInput]?, arguments: [String : Any]?, output: CIImageProcessorOutput) throws {
         guard
             let commandBuffer = output.metalCommandBuffer,
@@ -39,9 +39,9 @@ class ThresholdImageProcessorKernel: CIImageProcessorKernel {
         
         computer.encode("toGray", encodeTo: commandBuffer)
         computer.encode("bilateralFilter", encodeTo: commandBuffer)
-        (1...5).forEach{ _ in   // repeat kMeans n times
+        (1...3).forEach{ _ in   // repeat kMeans n times
             computer.encode("label", encodeTo: commandBuffer)
-            computer.encodeMPSHistogram(forImage: IOProvider.Labels, MTLHistogramBuffer: IOProvider.ClusterMemberCount, numberOfClusters: 3)
+            computer.encodeMPSHistogram(forImage: IOProvider.Labels, MTLHistogramBuffer: IOProvider.ClusterMemberCount, numberOfClusters: 3, to: commandBuffer)
             computer.encode("kMeans", encodeTo: commandBuffer)
             computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1), encodeTo: commandBuffer)
         }

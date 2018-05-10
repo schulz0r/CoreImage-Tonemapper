@@ -81,7 +81,11 @@ final class SegmentationProcessor: MTKPComputer {
         cmdBuffer.waitUntilCompleted()
     }
     
-    public func encodeMPSHistogram(forImage: MTLTexture, MTLHistogramBuffer: MTLBuffer, numberOfClusters: Int){
+    public func encodeMPSHistogram(forImage: MTLTexture, MTLHistogramBuffer: MTLBuffer, numberOfClusters: Int, to cmdBuff: MTLCommandBuffer? = nil){
+        guard let cmdBuffer = cmdBuff ?? self.commandBuffer else {
+            fatalError("Buffer")
+        }
+        
         var histogramInfo = MPSImageHistogramInfo(
             numberOfHistogramEntries: 256, histogramForAlpha: false,
             minPixelValue: vector_float4(0,0,0,0),
@@ -93,7 +97,7 @@ final class SegmentationProcessor: MTKPComputer {
             fatalError("Did not allocate enough memory for storing histogram Data in given buffer.")
         }
         
-        calculation.encode(to: commandBuffer,
+        calculation.encode(to: cmdBuffer,
                            sourceTexture: forImage,
                            histogram: MTLHistogramBuffer,
                            histogramOffset: 0)
