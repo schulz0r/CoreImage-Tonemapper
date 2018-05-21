@@ -26,7 +26,7 @@ class ThresholdImageProcessorKernel: CIImageProcessorKernel {
         
         let kMeansSummationTGLength = [MemoryLayout<Float>.size * 256]
         let IOProvider = segmentationIOProvider(grayInputTexture: bilateralFilterIO.outTexture)
-        let tonemapperIO = tonemappingIOProvider(inputLinearImage: sourceTexture, output: destinationTexture, segmentationIO: IOProvider)
+        let tonemapperIO = tonemappingIOProvider(inputLinearImage: sourceTexture, output: destinationTexture, Means: IOProvider.Means)
         
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: grayIOProvider))

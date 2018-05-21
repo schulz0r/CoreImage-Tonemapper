@@ -24,17 +24,16 @@ half NakaRushton(const half luminance, const half µ, const half2 lambda) {
 }
 
 kernel void tonemap(texture2d<half, access::read> image [[texture(0)]],
-                    texture2d<half, access::read> labels [[texture(1)]],
-                    texture2d<half, access::write> result [[texture(2)]],
+                    texture2d<half, access::write> result [[texture(1)]],
                     constant float * Means [[buffer(0)]],
+                    constant int & clusterIndex [[buffer(5)]],
                     uint2 gid [[thread_position_in_grid]]) {
     
     const half3 pixel = image.read(gid).rgb;
-    const uchar label = uchar(labels.read(gid).x);
     const half lightness = metal::dot(pixel, half3(0.33333));
     
     const half2 lambda(0,1);
-    const half lightnessPerception = NakaRushton(lightness, Means[label], lambda);
+    const half lightnessPerception = NakaRushton(lightness, Means[clusterIndex], lambda);
     
     result.write(half4(pixel / (pixel + lightnessPerception), 1), gid);
 }
