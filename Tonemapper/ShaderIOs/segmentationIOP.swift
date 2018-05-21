@@ -89,7 +89,8 @@ final class segmentationIOProvider: MTKPIOProvider {
     
     let inTexture, Labels : MTLTexture
     let ClusterMemberCount : MTLBuffer
-    private let Means, meanCount_k, buffer, bufferLen : MTLBuffer
+    private let meanCount_k, buffer, bufferLen : MTLBuffer
+    let Means : MTLBuffer
     
     init(grayInputTexture: MTLTexture){
         self.inTexture = grayInputTexture
