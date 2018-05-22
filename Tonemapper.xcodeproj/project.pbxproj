@@ -9,7 +9,9 @@
 /* Begin PBXBuildFile section */
 		171B0E0A208280D90068C3E5 /* tonemappingShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 171B0E09208280D90068C3E5 /* tonemappingShader.metal */; };
 		172F346320B3885600AEE982 /* imageMergeIOP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172F346220B3885600AEE982 /* imageMergeIOP.swift */; };
+
 		172F346520B4A98D00AEE982 /* pyramidBlending.metal in Sources */ = {isa = PBXBuildFile; fileRef = 172F346420B4A98D00AEE982 /* pyramidBlending.metal */; };
+
 		1741B67A202A7DAD00792F36 /* Tonemapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1741B670202A7DAD00792F36 /* Tonemapper.framework */; };
 		1741B67F202A7DAD00792F36 /* ShaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1741B67E202A7DAD00792F36 /* ShaderTests.swift */; };
 		1741B681202A7DAD00792F36 /* Tonemapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1741B673202A7DAD00792F36 /* Tonemapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -38,7 +40,9 @@
 /* Begin PBXFileReference section */
 		171B0E09208280D90068C3E5 /* tonemappingShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = tonemappingShader.metal; sourceTree = "<group>"; };
 		172F346220B3885600AEE982 /* imageMergeIOP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imageMergeIOP.swift; sourceTree = "<group>"; };
+
 		172F346420B4A98D00AEE982 /* pyramidBlending.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = pyramidBlending.metal; sourceTree = "<group>"; };
+
 		1741B670202A7DAD00792F36 /* Tonemapper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Tonemapper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1741B673202A7DAD00792F36 /* Tonemapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tonemapper.h; sourceTree = "<group>"; };
 		1741B674202A7DAD00792F36 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
