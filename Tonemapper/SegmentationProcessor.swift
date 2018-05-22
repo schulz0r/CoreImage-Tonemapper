@@ -102,4 +102,12 @@ final class SegmentationProcessor: MTKPComputer {
                            histogram: MTLHistogramBuffer,
                            histogramOffset: 0)
     }
+    
+    func makeImagePyramid(from: MTLTexture, pyramidTexture: MTLTexture, encodeTo: MTLCommandBuffer){
+        guard pyramidTexture.mipmapLevelCount > 0 else {
+            fatalError("Pyramid texture must have at least one mip level.")
+        }
+        let MPSPyramid = MPSImageGaussianPyramid(device: MTKPDevice.instance)
+        MPSPyramid.encode(commandBuffer: encodeTo, sourceTexture: from, destinationTexture: pyramidTexture)
+    }
 }
