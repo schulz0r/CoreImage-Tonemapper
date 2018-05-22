@@ -21,6 +21,11 @@ class ThresholdImageProcessorKernel: CIImageProcessorKernel {
                 return
         }
         
+        let globalIterator = (0..<3).map {
+            var index = uint($0)
+            MTKPDevice.instance.makeBuffer(bytes: &index, length: MemoryLayout<uint>.size, options: .cpuCacheModeWriteCombined)
+        }
+        
         let grayIOProvider = toGrayShaderIO(image: sourceTexture)
         let bilateralFilterIO = bilateralFilterShaderIO(image: grayIOProvider.grayTexture, sigma_spatial: 1.5, sigma_range: 0.1)
         
@@ -37,13 +42,20 @@ class ThresholdImageProcessorKernel: CIImageProcessorKernel {
         assets.add(shader: MTKPShader(name: "tonemap", io: tonemapperIO))
         let computer = SegmentationProcessor(assets: assets)
         
+        // Segment image
         computer.encode("toGray", encodeTo: commandBuffer)
         computer.encode("bilateralFilter", encodeTo: commandBuffer)
+        
         (1...3).forEach{ _ in   // repeat kMeans n times
             computer.encode("label", encodeTo: commandBuffer)
             computer.encodeMPSHistogram(forImage: IOProvider.Labels, MTLHistogramBuffer: IOProvider.ClusterMemberCount, numberOfClusters: 3, to: commandBuffer)
             computer.encode("kMeans", encodeTo: commandBuffer)
             computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1), encodeTo: commandBuffer)
+        }
+        
+        // tonemap
+        guard let clusterIndex = assets["tonemap"]?.buffers?[5] else {
+            fatalError()
         }
         computer.encode("tonemap", encodeTo: commandBuffer)
     }
