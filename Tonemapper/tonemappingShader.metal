@@ -33,7 +33,7 @@ kernel void tonemap(texture2d<half, access::read> image [[texture(0)]],
     const half3 pixel = image.read(gid).rgb;
     const half lightness = metal::dot(pixel, half3(0.33333));
     
-    const half2 lambda(label == 0 ? 0 : (Means[label] + Means[label - 1]) / 2, label == (kCluster - 1) ? 1.0 : (Means[label] + Means[label + 1]) / 2);
+    const half2 lambda(clusterIndex == 0 ? 0 : (Means[clusterIndex] + Means[clusterIndex - 1]) / 2, clusterIndex == (kCluster - 1) ? 1.0 : (Means[clusterIndex] + Means[clusterIndex + 1]) / 2);
 
     const half lightnessPerception = NakaRushton(lightness, Means[clusterIndex], lambda);
     
