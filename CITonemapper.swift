@@ -17,13 +17,18 @@ class ThresholdImageProcessorKernel: CIImageProcessorKernel {
             let commandBuffer = output.metalCommandBuffer,
             let input = inputs?.first,
             let sourceTexture = input.metalTexture,
-            let destinationTexture = output.metalTexture else  {
+            let destinationTexture = output.metalTexture
+        else  {
                 return
         }
         
-        let globalIterator = (0..<3).map {
+        let kClusters = 3 // TODO: enable segmentation provider to provide more clusters
+        let globalIterator:[MTLBuffer] = (0..<kClusters).map{
             var index = uint($0)
-            MTKPDevice.instance.makeBuffer(bytes: &index, length: MemoryLayout<uint>.size, options: .cpuCacheModeWriteCombined)
+            guard let buffer = MTKPDevice.instance.makeBuffer(bytes: &index, length: MemoryLayout<uint>.size, options: .cpuCacheModeWriteCombined) else {
+                fatalError()
+            }
+            return buffer
         }
         
         let grayIOProvider = toGrayShaderIO(image: sourceTexture)
@@ -32,6 +37,7 @@ class ThresholdImageProcessorKernel: CIImageProcessorKernel {
         let kMeansSummationTGLength = [MemoryLayout<Float>.size * 256]
         let IOProvider = segmentationIOProvider(grayInputTexture: bilateralFilterIO.outTexture)
         let tonemapperIO = tonemappingIOProvider(inputLinearImage: sourceTexture, output: destinationTexture, Means: IOProvider.Means)
+        let imageBlendingIO = ImageMergingIOProvider(clusterLabels: IOProvider.Labels, BlendLevels: 3)
         
         var assets = MTKPAssets(SegmentationProcessor.self)
         assets.add(shader: MTKPShader(name: "toGray", io: grayIOProvider))
@@ -46,17 +52,24 @@ class ThresholdImageProcessorKernel: CIImageProcessorKernel {
         computer.encode("toGray", encodeTo: commandBuffer)
         computer.encode("bilateralFilter", encodeTo: commandBuffer)
         
-        (1...3).forEach{ _ in   // repeat kMeans n times
+        (1...kClusters).forEach{ _ in   // repeat kMeans n times
             computer.encode("label", encodeTo: commandBuffer)
             computer.encodeMPSHistogram(forImage: IOProvider.Labels, MTLHistogramBuffer: IOProvider.ClusterMemberCount, numberOfClusters: 3, to: commandBuffer)
             computer.encode("kMeans", encodeTo: commandBuffer)
-            computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * 3, 1, 1), encodeTo: commandBuffer)
+            computer.encode("kMeansSumUp", threads: MTLSizeMake(256 * kClusters, 1, 1), encodeTo: commandBuffer)
         }
         
         // tonemap
-        guard let clusterIndex = assets["tonemap"]?.buffers?[5] else {
-            fatalError()
-        }
         computer.encode("tonemap", encodeTo: commandBuffer)
+        computer.makeImagePyramid(from: tonemapperIO.tonemappedImage, pyramidTexture: imageBlendingIO.blendBuffer_1, encodeTo: commandBuffer)
+        // todo: calculate laplacian pyramid of blendBuffer1
+        (1..<kClusters).forEach {
+            assets["tonemap"]?.buffers?[5] = globalIterator[$0]
+            // todo: make mask for this iteration
+            // todo: make gaussian pyramid from said mask
+            computer.makeImagePyramid(from: tonemapperIO.tonemappedImage, pyramidTexture: imageBlendingIO.blendBuffer_2, encodeTo: commandBuffer)
+            // todo: calculate laplacian pyramid of blendBuffer2
+            // todo: blend blendbuffer2 into blendbuufer1 using the gaussian pyramid from mask
+        }
     }
 }
